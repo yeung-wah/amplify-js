@@ -3,16 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [3.0.1](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@2.1.8...@aws-amplify/pushnotification@3.0.1) (2020-03-31)
+## [3.0.4](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@3.0.3...@aws-amplify/pushnotification@3.0.4) (2020-04-02)
 
+**Note:** Version bump only for package @aws-amplify/pushnotification
+
+## [3.0.3](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@3.0.2...@aws-amplify/pushnotification@3.0.3) (2020-04-01)
+
+**Note:** Version bump only for package @aws-amplify/pushnotification
+
+## [3.0.2](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@3.0.1...@aws-amplify/pushnotification@3.0.2) (2020-04-01)
+
+**Note:** Version bump only for package @aws-amplify/pushnotification
+
+## [3.0.1](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@2.1.8...@aws-amplify/pushnotification@3.0.1) (2020-03-31)
 
 ### Reverts
 
-* Revert "Publish" ([1319d31](https://github.com/aws-amplify/amplify-js/commit/1319d319b69717e76660fbfa6f1a845195c6d635))
-
-
-
-
+- Revert "Publish" ([1319d31](https://github.com/aws-amplify/amplify-js/commit/1319d319b69717e76660fbfa6f1a845195c6d635))
 
 ## [2.1.8](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/pushnotification@2.1.7...@aws-amplify/pushnotification@2.1.8) (2020-03-30)
 

@@ -12,10 +12,20 @@
  */
 
 import { Auth, CognitoHostedUIIdentityProvider } from './Auth';
-import { CognitoUser, CookieStorage } from 'amazon-cognito-identity-js';
+import {
+	CognitoUser,
+	CookieStorage,
+	appendToCognitoUserAgent,
+} from 'amazon-cognito-identity-js';
 
 /**
  * @deprecated use named import
  */
 export default Auth;
-export { Auth, CognitoUser, CookieStorage, CognitoHostedUIIdentityProvider };
+export {
+	Auth,
+	CognitoUser,
+	CookieStorage,
+	CognitoHostedUIIdentityProvider,
+	appendToCognitoUserAgent,
+};

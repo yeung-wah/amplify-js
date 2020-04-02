@@ -424,6 +424,7 @@ export class AuthClass {
 		if (!this.userPool) {
 			return this.rejectNoUserPool();
 		}
+
 		let username = null;
 		let password = null;
 		let validationData = {};
