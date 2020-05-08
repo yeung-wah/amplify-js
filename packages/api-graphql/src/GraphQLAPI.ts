@@ -198,10 +198,7 @@ export class GraphQLAPIClass {
 			case 'mutation':
 				return this._graphql({ query, variables, authMode }, additionalHeaders);
 			case 'subscription':
-				return this._graphqlSubscribe(
-					{ query, variables, authMode },
-					additionalHeaders
-				);
+				return this._graphqlSubscribe({ query, variables, authMode });
 		}
 
 		throw new Error(`invalid operation type: ${operationType}`);
@@ -280,10 +277,11 @@ export class GraphQLAPIClass {
 		return response;
 	}
 
-	private _graphqlSubscribe(
-		{ query, variables, authMode: defaultAuthenticationType }: GraphQLOptions,
-		additionalHeaders = {}
-	): Observable<any> {
+	private _graphqlSubscribe({
+		query,
+		variables,
+		authMode: defaultAuthenticationType,
+	}: GraphQLOptions): Observable<any> {
 		const {
 			aws_appsync_region: region,
 			aws_appsync_graphqlEndpoint: appSyncGraphqlEndpoint,
@@ -304,7 +302,6 @@ export class GraphQLAPIClass {
 				region,
 				variables,
 				graphql_headers,
-				additionalHeaders,
 			});
 		} else {
 			logger.debug('No pubsub module applied for subscription');

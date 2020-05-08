@@ -234,7 +234,6 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 			apiKey,
 			region,
 			graphql_headers = () => ({}),
-			additionalHeaders = {},
 		} = options;
 
 		const subscriptionState: SUBSCRIPTION_STATUS = SUBSCRIPTION_STATUS.PENDING;
@@ -264,7 +263,6 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				region,
 			})),
 			...(await graphql_headers()),
-			...additionalHeaders,
 			[USER_AGENT_HEADER]: Constants.userAgent,
 		};
 
