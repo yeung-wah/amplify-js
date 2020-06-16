@@ -7,18 +7,18 @@
 
 ## Properties
 
-| Property          | Attribute          | Description | Type                                                                 | Default                                                   |
-| ----------------- | ------------------ | ----------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
-| `buttonText`      | `button-text`      |             | `string`                                                             | `'Upload'`                                                |
-| `contentType`     | `content-type`     |             | `string`                                                             | `'binary/octet-stream'`                                   |
-| `fileToKey`       | --                 |             | `(data: object) => string`                                           | `undefined`                                               |
-| `headerHint`      | `header-hint`      |             | `string`                                                             | `'Ancilliary text or content may occupy this space here'` |
-| `headerTitle`     | `header-title`     |             | `string`                                                             | `'Add Profile Photos'`                                    |
-| `identityId`      | `identity-id`      |             | `string`                                                             | `undefined`                                               |
-| `level`           | `level`            |             | `AccessLevel.Private \| AccessLevel.Protected \| AccessLevel.Public` | `AccessLevel.Public`                                      |
-| `path`            | `path`             |             | `string`                                                             | `undefined`                                               |
-| `placeholderHint` | `placeholder-hint` |             | `string`                                                             | `'Placeholder hint'`                                      |
-| `track`           | `track`            |             | `boolean`                                                            | `undefined`                                               |
+| Property          | Attribute          | Description | Type                                                                 | Default                                               |
+| ----------------- | ------------------ | ----------- | -------------------------------------------------------------------- | ----------------------------------------------------- |
+| `buttonText`      | `button-text`      |             | `string`                                                             | `I18n.get(Translations.IMAGE_PICKER_BUTTON_TEXT)`     |
+| `contentType`     | `content-type`     |             | `string`                                                             | `'binary/octet-stream'`                               |
+| `fileToKey`       | --                 |             | `(data: object) => string`                                           | `undefined`                                           |
+| `headerHint`      | `header-hint`      |             | `string`                                                             | `I18n.get(Translations.IMAGE_PICKER_HINT)`            |
+| `headerTitle`     | `header-title`     |             | `string`                                                             | `I18n.get(Translations.IMAGE_PICKER_TITLE)`           |
+| `identityId`      | `identity-id`      |             | `string`                                                             | `undefined`                                           |
+| `level`           | `level`            |             | `AccessLevel.Private \| AccessLevel.Protected \| AccessLevel.Public` | `AccessLevel.Public`                                  |
+| `path`            | `path`             |             | `string`                                                             | `undefined`                                           |
+| `placeholderHint` | `placeholder-hint` |             | `string`                                                             | `I18n.get(Translations.IMAGE_PICKER_PLAEHOLDER_HINT)` |
+| `track`           | `track`            |             | `boolean`                                                            | `undefined`                                           |
 
 
 ## Dependencies
