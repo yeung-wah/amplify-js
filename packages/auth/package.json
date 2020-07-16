@@ -40,9 +40,6 @@
     "amazon-cognito-identity-js": "^4.3.3",
     "crypto-js": "^3.3.0"
   },
-  "devDependencies": {
-    "@jest/test-sequencer": "^24.9.0"
-  },
   "jest": {
     "globals": {
       "ts-jest": {
@@ -83,7 +80,6 @@
     },
     "coveragePathIgnorePatterns": [
       "/node_modules/"
-    ],
-    "testSequencer": "./testSequencer.js"
+    ]
   }
 }
