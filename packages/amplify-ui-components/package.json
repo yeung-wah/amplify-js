@@ -77,7 +77,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run test"
     }
   },
   "license": "Apache-2.0"
