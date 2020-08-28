@@ -351,15 +351,9 @@ jobs:
       shell: powershell.exe
     working_directory: ~/
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - 'fe:63:2f:b7:c3:d3:bf:ca:3c:d8:69:78:06:b3:e4:dd'
-      - run:
-          name: 'Clone Amplify JS Samples repo, install cypress, install react samples authenticator and link amplify packages'
-          command: |
-            git clone $env:AMPLIFY_JS_SAMPLES_STAGING_URL
-            cd amplify-js-samples-staging
-            yarn
+      - attach_workspace:
+          at: ~/
+      - run: yarn
       # - save_cache:
       #     key: amplify-js-{{ .Branch }}-{{ checksum "amplify-js-samples-staging/yarn.lock" }}
       #     paths:
@@ -368,26 +362,26 @@ jobs:
       #     root: /root
       #     paths:
       #       - amplify-js-samples-staging
-  # integ_setup:
-  #   executor: build-executor
-  #   working_directory: ~/
-  #   steps:
-  #     - run:
-  #         name: 'Clone Amplify JS Samples repo, install cypress, install react samples authenticator and link amplify packages'
-  #         command: |
-  #           mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-  #           echo $SSH_HOST_PUBLIC_KEY >> ~/.ssh/known_hosts
-  #           git clone $AMPLIFY_JS_SAMPLES_STAGING_URL
-  #           cd amplify-js-samples-staging
-  #           yarn
-  #     - save_cache:
-  #         key: amplify-js-{{ .Branch }}-{{ checksum "amplify-js-samples-staging/yarn.lock" }}
-  #         paths:
-  #           - ~/.cache ## cache both yarn and Cypress
-  #     - persist_to_workspace:
-  #         root: /root
-  #         paths:
-  #           - amplify-js-samples-staging
+  integ_setup:
+    executor: build-executor
+    working_directory: ~/
+    steps:
+      - run:
+          name: 'Clone Amplify JS Samples repo, install cypress, install react samples authenticator and link amplify packages'
+          command: |
+            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            echo $SSH_HOST_PUBLIC_KEY >> ~/.ssh/known_hosts
+            git clone $AMPLIFY_JS_SAMPLES_STAGING_URL
+            cd amplify-js-samples-staging
+            yarn
+      - save_cache:
+          key: amplify-js-{{ .Branch }}-{{ checksum "amplify-js-samples-staging/yarn.lock" }}
+          paths:
+            - ~/.cache ## cache both yarn and Cypress
+      - persist_to_workspace:
+          root: /root
+          paths:
+            - amplify-js-samples-staging
   # integ_react_auth:
   #   parameters:
   #     browser:
@@ -847,4 +841,7 @@ jobs:
 workflows:
   windows_test:
     jobs:
-      - integ_setup_windows
+      - integ_setup
+      - integ_setup_windows:
+          requires:
+            - integ_setup
