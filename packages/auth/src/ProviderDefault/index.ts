@@ -265,9 +265,12 @@ export class AuthProviderDefault implements AuthProvider {
 		return undefined as AuthUser;
 	};
 
-	private initiateAuth = (
-		params: InitiateAuthCommandInput
+	initiateAuth = (
+		params: Omit<InitiateAuthCommandInput, 'ClientId'>
 	): Promise<InitiateAuthCommandOutput> => {
-		return this.request<InitiateAuthCommandOutput>('InitiateAuth', params);
+		return this.request<InitiateAuthCommandOutput>('InitiateAuth', {
+			...params,
+			ClientId: this.clientId,
+		});
 	};
 }

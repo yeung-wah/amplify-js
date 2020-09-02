@@ -19,6 +19,10 @@ import { ConfirmResetPassword } from './confirm-reset-password';
 import { GetUser } from './get-user';
 import { RegisterDevice } from './register-device';
 import { UnregisterDevice } from './unregister-device';
+import {
+	InitiateAuthCommandInput,
+	InitiateAuthCommandOutput,
+} from '@aws-sdk/client-cognito-identity-provider';
 
 export interface AuthProvider {
 	getModuleName(): 'Auth';
@@ -46,6 +50,9 @@ export interface AuthProvider {
 	getUser: GetUser;
 	registerDevice: RegisterDevice;
 	unregisterDevice: UnregisterDevice;
+	initiateAuth(
+		params: Omit<InitiateAuthCommandInput, 'ClientId'>
+	): Promise<InitiateAuthCommandOutput>;
 }
 
 export * from './common';

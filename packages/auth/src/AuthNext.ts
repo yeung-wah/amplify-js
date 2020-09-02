@@ -23,6 +23,10 @@ import {
 	UnregisterDevice,
 } from './types';
 import { AuthProviderDefault } from './ProviderDefault';
+import {
+	InitiateAuthCommandInput,
+	InitiateAuthCommandOutput,
+} from '@aws-sdk/client-cognito-identity-provider';
 
 class AuthSingleton implements AuthProvider {
 	config?: AuthOptions;
@@ -127,6 +131,12 @@ class AuthSingleton implements AuthProvider {
 
 	unregisterDevice: UnregisterDevice = params => {
 		return this.provider.unregisterDevice(params);
+	};
+
+	initiateAuth = (
+		params: Omit<InitiateAuthCommandInput, 'ClientId'>
+	): Promise<InitiateAuthCommandOutput> => {
+		return this.provider.initiateAuth(params);
 	};
 }
 

@@ -1,4 +1,5 @@
 import { AuthNext } from '../src/AuthNext';
+import { AuthFlowType } from '../src/types';
 // import { randomDelay } from './utils';
 
 AuthNext.configure({
@@ -28,6 +29,17 @@ AuthNext.configure({
 	// 	code: '955927',
 	// });
 	// console.log(confirmSignUpResponse);
+
+	undefined;
+
+	const initAuthFlowResponse = await AuthNext.initiateAuth({
+		AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+		AuthParameters: {
+			USERNAME: 'harrysolovay@gmail.com',
+			PASSWORD: 'Testingthis123!',
+		},
+	});
+	console.log(initAuthFlowResponse);
 
 	undefined;
 })();
