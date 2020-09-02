@@ -68,7 +68,7 @@ export default class AuthenticationHelper {
 	 * @param {nodeCallback<BigInteger>} callback Called with (err, largeAValue)
 	 * @returns {void}
 	 */
-	getLargeAValue(callback: NodeCallback<BigInteger>) {
+	getLargeAValue(callback: NodeCallback<BigInteger>): void {
 		if (this.largeAValue) {
 			callback(null, this.largeAValue);
 		} else {
@@ -136,7 +136,7 @@ export default class AuthenticationHelper {
 		deviceGroupKey: string,
 		username: string,
 		callback: NodeCallback<any>
-	) {
+	): void {
 		this.randomPassword = this.generateRandomString();
 		const combinedString = `${deviceGroupKey}${username}:${this.randomPassword}`;
 		const hashedString = this.hash(combinedString);
@@ -254,7 +254,7 @@ export default class AuthenticationHelper {
 		serverBValue: BigInteger,
 		salt: BigInteger,
 		callback: NodeCallback<Buffer>
-	) {
+	): void {
 		if (serverBValue.mod(this.N).equals(createBigInteger[0])) {
 			throw new Error('B cannot be zero.');
 		}
