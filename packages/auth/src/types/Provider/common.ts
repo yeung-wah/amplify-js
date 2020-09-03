@@ -40,7 +40,14 @@ export interface AuthNextSignUpStep {
 
 export interface AuthStateFlow {}
 
-export interface AuthUser {}
+export type AuthSession<T = {}> = {
+	isSignedIn: boolean;
+} & T;
+
+export interface AuthUser {
+	username: string;
+	userId: string;
+}
 
 // TODO: get correct enum values
 export enum MfaOption {

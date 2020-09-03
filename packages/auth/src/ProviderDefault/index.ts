@@ -29,6 +29,7 @@ import {
 	AuthSignUpStep,
 	DeliveryMedium,
 	AuthFlowType,
+	FetchSession,
 } from '../types';
 import {
 	SignUpCommandInput,
@@ -41,20 +42,36 @@ import {
 	ResendConfirmationCodeCommandOutput,
 	InitiateAuthCommandInput,
 	InitiateAuthCommandOutput,
+	AuthenticationResultType,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { Credentials } from '@aws-sdk/types';
 import { Request } from './request';
 import { handleError } from './error';
+import {
+	fromCognitoIdentity,
+	FromCognitoIdentityParameters,
+	fromCognitoIdentityPool,
+	FromCognitoIdentityPoolParameters,
+} from '@aws-sdk/credential-provider-cognito-identity';
+import {
+	CognitoIdentityClient,
+	GetIdCommand,
+} from '@aws-sdk/client-cognito-identity';
+import { getAmplifyUserAgent } from '@aws-amplify/core';
 
-export class AuthProviderDefault implements AuthProvider {
+export class AuthProviderDefault {
 	request: ReturnType<Request>;
 	clientId?: string;
 	accessToken?: string;
 	authFlow: AuthFlowType = AuthFlowType.USER_SRP_AUTH;
+	isSignedIn = false;
+	config?: AuthOptions;
 
 	getModuleName = (): 'Auth' => 'Auth';
 	getProviderName = () => 'AmazonCognito';
 
 	configure(config: AuthOptions) {
+		this.config = config;
 		this.clientId = config.userPoolWebClientId;
 
 		this.request = Request({
@@ -263,6 +280,29 @@ export class AuthProviderDefault implements AuthProvider {
 	unregisterDevice: UnregisterDevice = async params => {
 		console.log('unregisterDevice Call');
 		return undefined as AuthUser;
+	};
+
+	// TODO: next!
+	fetchSession: FetchSession<{
+		awsCredentials: Credentials;
+		identityId: string;
+		userPoolTokens: AuthenticationResultType;
+		userSub: string;
+	}> = async () => {
+		if (!this.config) {
+			throw new Error('');
+		}
+		if (!this.isSignedIn) {
+			const cognitoClient = new CognitoIdentityClient({
+				region: this.config.region,
+				customUserAgent: getAmplifyUserAgent(),
+			});
+
+			const fromCognitoIdentityParameters: FromCognitoIdentityParameters = {
+				identityId: null,
+				client: cognitoClient,
+			};
+		}
 	};
 
 	initiateAuth = (

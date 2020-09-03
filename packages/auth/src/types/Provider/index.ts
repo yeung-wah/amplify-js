@@ -19,6 +19,7 @@ import { ConfirmResetPassword } from './confirm-reset-password';
 import { GetUser } from './get-user';
 import { RegisterDevice } from './register-device';
 import { UnregisterDevice } from './unregister-device';
+import { FetchSession } from './fetch-session';
 import {
 	InitiateAuthCommandInput,
 	InitiateAuthCommandOutput,
@@ -53,6 +54,7 @@ export interface AuthProvider {
 	initiateAuth(
 		params: Omit<InitiateAuthCommandInput, 'ClientId'>
 	): Promise<InitiateAuthCommandOutput>;
+	fetchSession: FetchSession<any>;
 }
 
 export * from './common';
@@ -76,3 +78,4 @@ export * from './confirm-reset-password';
 export * from './get-user';
 export * from './register-device';
 export * from './unregister-device';
+export * from './fetch-session';

@@ -1,9 +1,12 @@
 import { Buffer } from 'buffer';
-import CryptoJS from 'crypto-js/core';
+import * as CryptoJS from 'crypto-js/core';
 import 'crypto-js/lib-typedarrays'; // necessary for crypto js
-import SHA256 from 'crypto-js/sha256';
-import HmacSHA256 from 'crypto-js/hmac-sha256';
-import createBigInteger, { BigInteger } from 'big-integer';
+// @ts-ignore
+import * as SHA256 from 'crypto-js/sha256';
+// @ts-ignore
+import * as HmacSHA256 from 'crypto-js/hmac-sha256';
+import * as createBigInteger from 'big-integer';
+import { BigInteger } from 'big-integer';
 
 const randomBytes = (nBytes: number) => {
 	return Buffer.from(CryptoJS.lib.WordArray.random(nBytes).toString(), 'hex');
@@ -31,8 +34,7 @@ const newPasswordRequiredChallengeUserAttributePrefix = 'userAttributes.';
 
 type NodeCallback<R> = (error: Error | null, success: R | null) => void;
 
-/** @class */
-export default class AuthenticationHelper {
+export class AuthenticationHelper {
 	N: BigInteger;
 	g: BigInteger;
 	k: BigInteger;

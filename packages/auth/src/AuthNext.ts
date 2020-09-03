@@ -21,6 +21,7 @@ import {
 	GetUser,
 	RegisterDevice,
 	UnregisterDevice,
+	FetchSession,
 } from './types';
 import { AuthProviderDefault } from './ProviderDefault';
 import {
@@ -131,6 +132,10 @@ class AuthSingleton implements AuthProvider {
 
 	unregisterDevice: UnregisterDevice = params => {
 		return this.provider.unregisterDevice(params);
+	};
+
+	fetchSession: FetchSession<any> = () => {
+		return this.provider.fetchSession();
 	};
 
 	initiateAuth = (
