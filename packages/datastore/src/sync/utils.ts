@@ -20,7 +20,8 @@ import {
 	SchemaNonModel,
 } from '../types';
 import { exhaustiveCheck } from '../util';
-import { MutationEvent } from './';
+import { MutationEvent, ComplexObject } from './';
+import { handleLocal } from './ComplexObjUtils';
 
 enum GraphQLOperationType {
 	LIST = 'query',
@@ -318,7 +319,7 @@ export function buildGraphQLOperation(
 	];
 }
 
-export function createMutationInstanceFromModelOperation<
+export async function createMutationInstanceFromModelOperation<
 	T extends PersistentModel
 >(
 	relationships: RelationshipType,
@@ -330,8 +331,10 @@ export function createMutationInstanceFromModelOperation<
 	MutationEventConstructor: PersistentModelConstructor<MutationEvent>,
 	modelInstanceCreator: ModelInstanceCreator,
 	id?: string
-): MutationEvent {
+): Promise<MutationEvent> {
 	let operation: TransformerMutationType;
+
+	const [newElement, fileList] = await handleLocal(element, model.name);
 
 	switch (opType) {
 		case OpType.INSERT:
@@ -349,11 +352,12 @@ export function createMutationInstanceFromModelOperation<
 
 	const mutationEvent = modelInstanceCreator(MutationEventConstructor, {
 		...(id ? { id } : {}),
-		data: JSON.stringify(element),
-		modelId: element.id,
+		data: JSON.stringify(newElement),
+		modelId: newElement.id,
 		model: model.name,
 		operation,
 		condition: JSON.stringify(condition),
+		complexObjects: fileList,
 	});
 
 	return mutationEvent;
