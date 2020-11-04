@@ -157,14 +157,14 @@ commands:
             yarn global add detox-cli
       - run:
           name: Detox Build
-          command: detox build -c ios.sim.debug
+          command: yarn detox:build
       - run:
           environment:
             JEST_JUNIT_OUTPUT_DIR: 'reports/junit'
             JEST_JUNIT_OUTPUT_NAME: 'detox-test-results.xml'
           name: Detox Test
           command: |
-            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c ios.sim.debug -u' -n 3
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox:test' -n 3
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -255,14 +255,14 @@ commands:
           name: Start Metro Packager (background)
       - run:
           name: Detox Build
-          command: detox build -c android.emu.debug
+          command: yarn detox:build
       - run:
           environment:
             JEST_JUNIT_OUTPUT_DIR: 'reports/junit'
             JEST_JUNIT_OUTPUT_NAME: 'detox-test-results.xml'
           name: Detox Test
           command: |
-            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c android.emu.debug -u' -n 3
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox:test' -n 3
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -518,6 +518,24 @@ jobs:
           sample_name: many-to-many
           spec: many-to-many
           browser: << parameters.browser >>
+
+  react datastore selective sync:
+    parameters:
+      browser:
+        type: string
+    executor: js-test-executor
+    <<: *test_env_vars
+    working_directory: ~/amplify-js-samples-staging/samples/react/datastore/selective-sync
+    steps:
+      - prepare_test_env
+      - integ_test_js:
+          test_name: 'React DataStore'
+          framework: react
+          category: datastore
+          sample_name: selective-sync
+          spec: selective-sync
+          browser: << parameters.browser >>
+
   integ_react_storage:
     parameters:
       browser:
@@ -534,6 +552,7 @@ jobs:
           sample_name: storageApp
           spec: storage
           browser: << parameters.browser >>
+
   integ_react_storage_ui:
     executor: js-test-executor
     <<: *test_env_vars
@@ -546,6 +565,7 @@ jobs:
           category: storage
           sample_name: storageComp
           spec: storage-comp
+
   integ_amazon_cognito_identity_js:
     parameters:
       browser:
@@ -657,13 +677,16 @@ releasable_branches: &releasable_branches
       - main
       - ui-components/main
       - 1.0-stable
+      - detox-script #TODO
 
 test_browsers: &test_browsers
   browser: [chrome, firefox]
 
 datastore_auth_scenarios: &datastore_auth_scenarios
-  scenario: [
-      owner-based-default, # TODO: Add `owner-based-operations` when tests pass
+  scenario:
+    [
+      owner-based-default,
+      owner-based-operations,
       static-user-pool-groups-default,
       static-user-pool-groups-operations,
       owner-and-group-different-models-default,
@@ -760,6 +783,15 @@ workflows:
           matrix:
             parameters:
               <<: *test_browsers
+      - react datastore selective sync:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+          matrix:
+            parameters:
+              <<: *test_browsers
       - integ_react_storage:
           requires:
             - integ_setup
@@ -811,30 +843,30 @@ workflows:
           matrix:
             parameters:
               <<: *datastore_auth_scenarios
-      - deploy:
-          filters:
-            <<: *releasable_branches
-          requires:
-            - unit_test
-            - integ_react_predictions
-            - integ_react_datastore
-            - integ_react_storage
-            - integ_react_storage_ui
-            - integ_react_interactions
-            - integ_angular_interactions
-            - integ_vue_interactions
-            - integ_amazon_cognito_identity_js
-            - integ_react_auth
-            - integ_angular_auth
-            - integ_vue_auth
-            - integ_rn_ios_storage
-            - integ_rn_ios_push_notifications
-            - integ_rn_android_storage
-            - integ_datastore_auth
-      - post_release:
-          filters:
-            branches:
-              only:
-                - release
-          requires:
-            - deploy
+      # - deploy:
+      #     filters:
+      #       <<: *releasable_branches
+      #     requires:
+      #       - unit_test
+      #       - integ_react_predictions
+      #       - integ_react_datastore
+      #       - integ_react_storage
+      #       - integ_react_storage_ui
+      #       - integ_react_interactions
+      #       - integ_angular_interactions
+      #       - integ_vue_interactions
+      #       - integ_amazon_cognito_identity_js
+      #       - integ_react_auth
+      #       - integ_angular_auth
+      #       - integ_vue_auth
+      #       - integ_rn_ios_storage
+      #       - integ_rn_ios_push_notifications
+      #       - integ_rn_android_storage
+      #       - integ_datastore_auth
+      # - post_release:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - release
+      #     requires:
+      #       - deploy
