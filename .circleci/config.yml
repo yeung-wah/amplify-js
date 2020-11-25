@@ -753,15 +753,15 @@ workflows:
           matrix:
             parameters:
               <<: *test_browsers
-      - integ_react_datastore:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-          matrix:
-            parameters:
-              <<: *test_browsers
+      # - integ_react_datastore:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      #     matrix:
+      #       parameters:
+      #         <<: *test_browsers
       - integ_react_storage:
           requires:
             - integ_setup
