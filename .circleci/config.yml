@@ -819,7 +819,7 @@ workflows:
           requires:
             - unit_test
             - integ_react_predictions
-            - integ_react_datastore
+            # - integ_react_datastore
             - integ_react_storage
             - integ_react_storage_ui
             - integ_react_interactions
