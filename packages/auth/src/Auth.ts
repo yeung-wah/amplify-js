@@ -322,6 +322,10 @@ export class AuthClass {
 		if (!password) {
 			return this.rejectAuthError(AuthErrorTypes.EmptyPassword);
 		}
+		username = username.trim();
+		if (password !== password.trim()) {
+			return this.rejectAuthError(AuthErrorTypes.SpaceAroundPassword);
+		}
 
 		logger.debug('signUp attrs:', attributes);
 		logger.debug('signUp validation data:', validationData);
@@ -471,6 +475,7 @@ export class AuthClass {
 		if (!username) {
 			return this.rejectAuthError(AuthErrorTypes.EmptyUsername);
 		}
+		username = username.trim();
 		const authDetails = new AuthenticationDetails({
 			Username: username,
 			Password: password,
@@ -1687,6 +1692,7 @@ export class AuthClass {
 		if (!username) {
 			return this.rejectAuthError(AuthErrorTypes.EmptyUsername);
 		}
+		username = username.trim();
 
 		const user = this.createCognitoUser(username);
 		return new Promise((resolve, reject) => {

@@ -81,6 +81,9 @@ export const authErrorMessages: AuthErrorMessages = {
 	emptyPassword: {
 		message: AuthErrorStrings.EMPTY_PASSWORD,
 	},
+	spaceAroundPassword: {
+		message: AuthErrorStrings.SPACE_AROUND_PASSWORD,
+	},
 	emptyCode: {
 		message: AuthErrorStrings.EMPTY_CODE,
 	},

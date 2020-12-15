@@ -193,6 +193,7 @@ export enum AuthErrorTypes {
 	EmptyUsername = 'emptyUsername',
 	InvalidUsername = 'invalidUsername',
 	EmptyPassword = 'emptyPassword',
+	SpaceAroundPassword = 'spaceAroundPassword',
 	EmptyCode = 'emptyCode',
 	SignUpError = 'signUpError',
 	NoMFA = 'noMFA',
