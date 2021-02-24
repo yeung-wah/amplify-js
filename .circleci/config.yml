@@ -886,7 +886,7 @@ workflows:
             - integ_react_predictions
             - integ_react_datastore
             - integ_react_storage
-            - integ_react_storage_multipart_progress
+            # - integ_react_storage_multipart_progress
             - integ_react_storage_ui
             - integ_react_interactions
             - integ_angular_interactions
@@ -896,10 +896,10 @@ workflows:
             - integ_angular_auth
             - integ_vue_auth
             - integ_rn_ios_storage
-            - integ_rn_ios_storage_multipart_progress
+            # - integ_rn_ios_storage_multipart_progress
             - integ_rn_ios_push_notifications
             - integ_rn_android_storage
-            - integ_rn_android_storage_multipart_progress
+            # - integ_rn_android_storage_multipart_progress
             - integ_datastore_auth
       - post_release:
           filters:
