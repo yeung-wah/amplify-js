@@ -44,6 +44,7 @@
     "@types/zen-observable": "^0.8.0"
   },
   "dependencies": {
+    "@aws-amplify/datastore": "2.9.10",
     "@aws-amplify/api-rest": "1.2.24",
     "@aws-amplify/auth": "3.4.24",
     "@aws-amplify/cache": "3.1.49",

@@ -24,7 +24,7 @@ import {
 import { exhaustiveCheck } from '../util';
 import { MutationEvent } from './';
 
-enum GraphQLOperationType {
+export enum GraphQLOperationType {
 	LIST = 'query',
 	CREATE = 'mutation',
 	UPDATE = 'mutation',

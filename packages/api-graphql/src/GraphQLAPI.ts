@@ -26,8 +26,16 @@ import {
 import PubSub from '@aws-amplify/pubsub';
 import Auth from '@aws-amplify/auth';
 import Cache from '@aws-amplify/cache';
-import { GraphQLOptions, GraphQLResult } from './types';
+import { GraphQLOptions, GraphQLResult, DSGraphQLOptions } from './types';
 import { RestClient } from '@aws-amplify/api-rest';
+
+import {
+	buildGraphQLOperation,
+	getSchema,
+	createQueryVariables,
+	TransformerMutationType,
+} from '@aws-amplify/datastore';
+
 const USER_AGENT_HEADER = 'x-amz-user-agent';
 
 const logger = new Logger('GraphQLAPI');
@@ -194,9 +202,47 @@ export class GraphQLAPIClass {
 	 * @returns {Promise<GraphQLResult> | Observable<object>}
 	 */
 	graphql(
-		{ query: paramQuery, variables = {}, authMode }: GraphQLOptions,
+		options: GraphQLOptions | DSGraphQLOptions,
 		additionalHeaders?: { [key: string]: string }
 	) {
+		// TODO: TS experience
+		let paramQuery, variables, authMode;
+
+		if ('model' in options) {
+			const { model, operation } = options;
+
+			const modelConstructor = (model as Object).constructor;
+			const {
+				namespaces: { user: namespace },
+			} = getSchema();
+			const {
+				models: { [modelConstructor.name]: modelDefinition },
+			} = namespace;
+
+			// syncable models only
+
+			const graphqlOps = buildGraphQLOperation(
+				namespace,
+				modelDefinition,
+				operation
+			);
+
+			[[, , paramQuery]] = graphqlOps;
+
+			const operation2: TransformerMutationType =
+				TransformerMutationType.CREATE;
+			[, variables] = createQueryVariables(
+				modelDefinition,
+				operation2,
+				// TODO: Automerge, What about sending only the fields that changed? (and the composite key if any)
+				JSON.stringify(model),
+				JSON.stringify({}),
+				graphqlOps
+			);
+		} else {
+			({ query: paramQuery, variables = {}, authMode } = options);
+		}
+
 		const query =
 			typeof paramQuery === 'string'
 				? parse(paramQuery)

@@ -14,10 +14,17 @@
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { DocumentNode } from 'graphql/language/ast';
 
+import { PersistentModel, GraphQLOperationType } from '@aws-amplify/datastore';
+
 export interface GraphQLOptions {
 	query: string | DocumentNode;
 	variables?: object;
 	authMode?: GRAPHQL_AUTH_MODE;
+}
+
+export interface DSGraphQLOptions {
+	model: PersistentModel;
+	operation: keyof typeof GraphQLOperationType;
 }
 
 export enum GRAPHQL_AUTH_MODE {

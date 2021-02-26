@@ -24,6 +24,7 @@ import {
 	Credentials,
 } from '@aws-amplify/core';
 import Observable from 'zen-observable-ts';
+import { DSGraphQLOptions } from '@aws-amplify/api-graphql';
 
 const logger = new Logger('API');
 /**
@@ -188,7 +189,7 @@ export class APIClass {
 	 * @returns {Promise<GraphQLResult> | Observable<object>}
 	 */
 	graphql(
-		options: GraphQLOptions,
+		options: GraphQLOptions | DSGraphQLOptions,
 		additionalHeaders?: { [key: string]: string }
 	): Promise<GraphQLResult> | Observable<object> {
 		return this._graphqlApi.graphql(options, additionalHeaders);

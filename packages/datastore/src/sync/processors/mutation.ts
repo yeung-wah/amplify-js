@@ -349,78 +349,13 @@ class MutationProcessor {
 
 		const queriesTuples = this.typeQuery.get(modelDefinition);
 
-		const [, opName, query] = queriesTuples.find(
-			([transformerMutationType]) => transformerMutationType === operation
+		return createQueryVariables(
+			modelDefinition,
+			operation,
+			data,
+			condition,
+			queriesTuples
 		);
-
-		const { _version, ...parsedData } = <ModelInstanceMetadata>JSON.parse(data);
-
-		const filteredData =
-			operation === TransformerMutationType.DELETE
-				? <ModelInstanceMetadata>{ id: parsedData.id } // For DELETE mutations, only ID is sent
-				: Object.values(modelDefinition.fields)
-						.filter(({ name, type, association }) => {
-							// connections
-							if (isModelFieldType(type)) {
-								// BELONGS_TO
-								if (
-									isTargetNameAssociation(association) &&
-									association.connectionType === 'BELONGS_TO'
-								) {
-									return true;
-								}
-
-								// All other connections
-								return false;
-							}
-
-							if (operation === TransformerMutationType.UPDATE) {
-								// this limits the update mutation input to changed fields only
-								return parsedData.hasOwnProperty(name);
-							}
-
-							// scalars and non-model types
-							return true;
-						})
-						.map(({ name, type, association }) => {
-							let fieldName = name;
-							let val = parsedData[name];
-
-							if (
-								isModelFieldType(type) &&
-								isTargetNameAssociation(association)
-							) {
-								fieldName = association.targetName;
-								val = parsedData[fieldName];
-							}
-
-							return [fieldName, val];
-						})
-						.reduce((acc, [k, v]) => {
-							acc[k] = v;
-							return acc;
-						}, <typeof parsedData>{});
-
-		// Build mutation variables input object
-		const input: ModelInstanceMetadata = {
-			...filteredData,
-			_version,
-		};
-
-		const graphQLCondition = <GraphQLCondition>JSON.parse(condition);
-
-		const variables = {
-			input,
-			...(operation === TransformerMutationType.CREATE
-				? {}
-				: {
-						condition:
-							Object.keys(graphQLCondition).length > 0
-								? graphQLCondition
-								: null,
-				  }),
-		};
-		return [query, variables, graphQLCondition, opName, modelDefinition];
 	}
 
 	private opTypeFromTransformerOperation(
@@ -443,6 +378,85 @@ class MutationProcessor {
 	public pause() {
 		this.processing = false;
 	}
+}
+
+export function createQueryVariables(
+	modelDefinition: SchemaModel,
+	operation: TransformerMutationType,
+	data: string,
+	condition: string,
+	queriesTuples: [TransformerMutationType, string, string][]
+): [string, Record<string, any>, GraphQLCondition, string, SchemaModel] {
+	const [, opName, query] = queriesTuples.find(
+		([transformerMutationType]) => transformerMutationType === operation
+	);
+
+	const { _version, ...parsedData } = <ModelInstanceMetadata>JSON.parse(data);
+
+	const filteredData =
+		operation === TransformerMutationType.DELETE
+			? <ModelInstanceMetadata>{ id: parsedData.id } // For DELETE mutations, only ID is sent
+			: Object.values(modelDefinition.fields)
+					.filter(({ name, type, association }) => {
+						// connections
+						if (isModelFieldType(type)) {
+							// BELONGS_TO
+							if (
+								isTargetNameAssociation(association) &&
+								association.connectionType === 'BELONGS_TO'
+							) {
+								return true;
+							}
+
+							// All other connections
+							return false;
+						}
+
+						if (operation === TransformerMutationType.UPDATE) {
+							// this limits the update mutation input to changed fields only
+							return parsedData.hasOwnProperty(name);
+						}
+
+						// scalars and non-model types
+						return true;
+					})
+					.map(({ name, type, association }) => {
+						let fieldName = name;
+						let val = parsedData[name];
+
+						if (
+							isModelFieldType(type) &&
+							isTargetNameAssociation(association)
+						) {
+							fieldName = association.targetName;
+							val = parsedData[fieldName];
+						}
+
+						return [fieldName, val];
+					})
+					.reduce((acc, [k, v]) => {
+						acc[k] = v;
+						return acc;
+					}, <typeof parsedData>{});
+
+	// Build mutation variables input object
+	const input: ModelInstanceMetadata = {
+		...filteredData,
+		_version,
+	};
+
+	const graphQLCondition = <GraphQLCondition>JSON.parse(condition);
+
+	const variables = {
+		input,
+		...(operation === TransformerMutationType.CREATE
+			? {}
+			: {
+					condition:
+						Object.keys(graphQLCondition).length > 0 ? graphQLCondition : null,
+			  }),
+	};
+	return [query, variables, graphQLCondition, opName, modelDefinition];
 }
 
 export { MutationProcessor };

@@ -81,6 +81,10 @@ declare class Setting {
 
 const SETTING_SCHEMA_VERSION = 'schemaVersion';
 
+export function getSchema() {
+	return schema;
+}
+
 let schema: InternalSchema;
 const modelNamespaceMap = new WeakMap<
 	PersistentModelConstructor<any>,
