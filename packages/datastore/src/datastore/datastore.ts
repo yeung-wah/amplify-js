@@ -339,6 +339,8 @@ const initializeInstance = <T>(
 	draft: Draft<T & ModelInstanceMetadata>
 ) => {
 	const modelValidator = validateModelFields(modelDefinition);
+	// TODO: we should iterate over modelDefinition.fields to ensure that all
+	// required fields have been supplied
 	Object.entries(init).forEach(([k, v]) => {
 		modelValidator(k, v);
 		(<any>draft)[k] = v;

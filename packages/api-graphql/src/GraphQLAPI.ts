@@ -34,6 +34,7 @@ import {
 	getSchema,
 	createQueryVariables,
 	TransformerMutationType,
+	exhaustiveCheck,
 } from '@aws-amplify/datastore';
 
 const USER_AGENT_HEADER = 'x-amz-user-agent';
@@ -227,18 +228,41 @@ export class GraphQLAPIClass {
 				operation
 			);
 
+			console.log('graphqlOps', graphqlOps);
+
+			let transformerMutationType: TransformerMutationType;
+
 			[[, , paramQuery]] = graphqlOps;
 
-			const operation2: TransformerMutationType =
-				TransformerMutationType.CREATE;
-			[, variables] = createQueryVariables(
-				modelDefinition,
-				operation2,
-				// TODO: Automerge, What about sending only the fields that changed? (and the composite key if any)
-				JSON.stringify(model),
-				JSON.stringify({}),
-				graphqlOps
-			);
+			switch (operation) {
+				case 'CREATE':
+					transformerMutationType = TransformerMutationType.CREATE;
+					break;
+				case 'UPDATE':
+					transformerMutationType = TransformerMutationType.UPDATE;
+					break;
+				case 'DELETE':
+					transformerMutationType = TransformerMutationType.DELETE;
+					break;
+				case 'LIST':
+					break;
+				case 'GET':
+					transformerMutationType = TransformerMutationType.GET;
+					break;
+				default:
+					exhaustiveCheck(operation);
+			}
+
+			if (['CREATE', 'UPDATE', 'DELETE'].includes(operation as string)) {
+				[, variables] = createQueryVariables(
+					modelDefinition,
+					transformerMutationType,
+					// TODO: Automerge, What about sending only the fields that changed? (and the composite key if any)
+					JSON.stringify(model),
+					JSON.stringify({}),
+					graphqlOps
+				);
+			}
 		} else {
 			({ query: paramQuery, variables = {}, authMode } = options);
 		}

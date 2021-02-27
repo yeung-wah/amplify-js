@@ -4,6 +4,7 @@ export {
 	initSchema,
 	getSchema,
 } from './datastore/datastore';
+export { exhaustiveCheck } from './util';
 export { Predicates } from './predicates';
 export * from './types';
 export {
