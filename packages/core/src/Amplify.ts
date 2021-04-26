@@ -2,6 +2,14 @@ import { ConsoleLogger as LoggerClass } from './Logger';
 
 const logger = new LoggerClass('Amplify');
 
+const key =
+	typeof Symbol === 'function'
+		? Symbol.for('amplifyRegistry')
+		: '@@amplifyRegistry';
+globalThis[key] = globalThis[key] || new Map<string, any>();
+
+const registeredModules = globalThis[key] as Map<string, any>;
+
 export class AmplifyClass {
 	// Everything that is `register`ed is tracked here
 	private _components = [];
@@ -33,9 +41,23 @@ export class AmplifyClass {
 	register(comp) {
 		logger.debug('component registered in amplify', comp);
 		this._components.push(comp);
+
 		if (typeof comp.getModuleName === 'function') {
-			this._modules[comp.getModuleName()] = comp;
-			this[comp.getModuleName()] = comp;
+			const moduleName = comp.getModuleName();
+
+			if (
+				registeredModules.has(moduleName) &&
+				registeredModules.get(moduleName) !== comp
+			) {
+				throw new Error(
+					`Module already registered: ${moduleName}. Different instance, duplicate version of a package`
+				);
+			}
+
+			registeredModules.set(moduleName, comp);
+
+			this._modules[moduleName] = comp;
+			this[moduleName] = comp;
 		} else {
 			logger.debug('no getModuleName method for component', comp);
 		}
