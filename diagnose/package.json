@@ -1,0 +1,20 @@
+{
+  "name": "amplify-diagnose-poc",
+  "version": "0.0.1",
+  "description": "Script detecting duplicate amplify packages",
+  "main": "src/index.js",
+  "bin": {
+    "amplify-diagnose": "src/index.js"
+  },
+  "scripts": {
+    "dev": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/wlee221/ampdev#readme",
+  "devDependencies": {
+    "chalk": "^4.1.1",
+    "node-fetch": "^2.6.1",
+    "yargs": "^16.2.0"
+  },
+  "dependencies": {}
+}
