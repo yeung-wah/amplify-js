@@ -384,6 +384,13 @@ jobs:
           spec: ui-amplify-authenticator
           browser: << parameters.browser >>
       - integ_test_js:
+          test_name: 'React Authenticator'
+          framework: react
+          category: auth
+          sample_name: guest-to-auth-user
+          spec: guest-to-auth-user
+          browser: << parameters.browser >>
+      - integ_test_js:
           test_name: 'React Typescript Authenticator'
           framework: react
           category: auth
@@ -820,6 +827,7 @@ releasable_branches: &releasable_branches
       - main
       - ui-components/main
       - 1.0-stable
+      - addGuestAuthTests
 
 test_browsers: &test_browsers
   browser: [chrome, firefox]
@@ -1047,39 +1055,39 @@ workflows:
           matrix:
             parameters:
               <<: *test_browsers
-      - deploy:
-          filters:
-            <<: *releasable_branches
-          requires:
-            - unit_test
-            - integ_react_predictions
-            - integ_react_datastore
-            - integ_react_datastore_multi_auth
-            - integ_react_datastore_subs_disabled
-            - integ_react_datastore_consecutive_saves
-            - integ_react_storage
-            - integ_react_storage_multipart_progress
-            - integ_react_storage_ui
-            - integ_react_interactions
-            - integ_angular_interactions
-            - integ_vue_interactions
-            - integ_react_amazon_cognito_identity_js_cookie_storage
-            - integ_react_amazon_cognito_identity_js
-            - integ_node_amazon_cognito_identity_js
-            - integ_react_auth
-            - integ_angular_auth
-            - integ_vue_auth
-            - integ_rn_ios_storage
-            - integ_rn_ios_storage_multipart_progress
-            - integ_rn_android_storage_multipart_progress
-            - integ_rn_ios_push_notifications
-            - integ_rn_android_storage
-            - integ_datastore_auth
-            - integ_duplicate_packages
-      - post_release:
-          filters:
-            branches:
-              only:
-                - release
-          requires:
-            - deploy
+      # - deploy:
+      #     filters:
+      #       <<: *releasable_branches
+      #     requires:
+      #       - unit_test
+      #       - integ_react_predictions
+      #       - integ_react_datastore
+      #       - integ_react_datastore_multi_auth
+      #       - integ_react_datastore_subs_disabled
+      #       - integ_react_datastore_consecutive_saves
+      #       - integ_react_storage
+      #       - integ_react_storage_multipart_progress
+      #       - integ_react_storage_ui
+      #       - integ_react_interactions
+      #       - integ_angular_interactions
+      #       - integ_vue_interactions
+      #       - integ_react_amazon_cognito_identity_js_cookie_storage
+      #       - integ_react_amazon_cognito_identity_js
+      #       - integ_node_amazon_cognito_identity_js
+      #       - integ_react_auth
+      #       - integ_angular_auth
+      #       - integ_vue_auth
+      #       - integ_rn_ios_storage
+      #       - integ_rn_ios_storage_multipart_progress
+      #       - integ_rn_android_storage_multipart_progress
+      #       - integ_rn_ios_push_notifications
+      #       - integ_rn_android_storage
+      #       - integ_datastore_auth
+      #       - integ_duplicate_packages
+      # - post_release:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - release
+      #     requires:
+      #       - deploy
