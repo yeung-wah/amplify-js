@@ -503,6 +503,7 @@ export default class CognitoUser {
 		}
 
 		if (challengeName === 'DEVICE_SRP_AUTH') {
+			this.Session = dataAuthenticate.Session;
 			this.getDeviceResponse(callback);
 			return undefined;
 		}
@@ -671,6 +672,7 @@ export default class CognitoUser {
 				ChallengeName: 'DEVICE_SRP_AUTH',
 				ClientId: this.pool.getClientId(),
 				ChallengeResponses: authParameters,
+				Session: this.Session,
 				ClientMetadata: clientMetadata,
 			};
 			if (this.getUserContextData()) {
@@ -879,6 +881,7 @@ export default class CognitoUser {
 				const challengeName = dataAuthenticate.ChallengeName;
 
 				if (challengeName === 'DEVICE_SRP_AUTH') {
+					this.Session = dataAuthenticate.Session;
 					this.getDeviceResponse(callback);
 					return undefined;
 				}
@@ -1393,7 +1396,7 @@ export default class CognitoUser {
 
 		const keyPrefix = `CognitoIdentityServiceProvider.${this.pool.getClientId()}.${
 			this.username
-		}`;
+			}`;
 		const idTokenKey = `${keyPrefix}.idToken`;
 		const accessTokenKey = `${keyPrefix}.accessToken`;
 		const refreshTokenKey = `${keyPrefix}.refreshToken`;
@@ -1558,7 +1561,7 @@ export default class CognitoUser {
 	cacheDeviceKeyAndPassword() {
 		const keyPrefix = `CognitoIdentityServiceProvider.${this.pool.getClientId()}.${
 			this.username
-		}`;
+			}`;
 		const deviceKeyKey = `${keyPrefix}.deviceKey`;
 		const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
 		const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
@@ -1575,7 +1578,7 @@ export default class CognitoUser {
 	getCachedDeviceKeyAndPassword() {
 		const keyPrefix = `CognitoIdentityServiceProvider.${this.pool.getClientId()}.${
 			this.username
-		}`;
+			}`;
 		const deviceKeyKey = `${keyPrefix}.deviceKey`;
 		const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
 		const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
@@ -1594,7 +1597,7 @@ export default class CognitoUser {
 	clearCachedDeviceKeyAndPassword() {
 		const keyPrefix = `CognitoIdentityServiceProvider.${this.pool.getClientId()}.${
 			this.username
-		}`;
+			}`;
 		const deviceKeyKey = `${keyPrefix}.deviceKey`;
 		const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
 		const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
