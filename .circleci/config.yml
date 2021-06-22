@@ -34,7 +34,7 @@ executors:
 
   macos-executor:
     macos:
-      xcode: 12.4.0
+      xcode: 11.5.0
 
 test_env_vars: &test_env_vars
   environment:
