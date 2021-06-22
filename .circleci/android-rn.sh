@@ -24,6 +24,14 @@ case $1 in
 	nvm alias default 10
 	;;
   sdkmanager)
+    java -version
+	brew tap adoptopenjdk/openjdk
+	brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
+	java -version
+	export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+	mkdir -p ~/.android && touch ~/.android/repositories.cfg
+	java -version
+	
 	yes | sdkmanager "platform-tools" "tools" >/dev/null
 	yes | sdkmanager "platforms;android-28" "system-images;android-28;default;x86_64" >/dev/null
 	yes | sdkmanager "emulator" >/dev/null
