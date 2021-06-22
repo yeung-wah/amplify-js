@@ -256,7 +256,7 @@ commands:
           command: |
             cd ~/amplify-js
             ./.circleci/android-rn.sh install-node
-          name: Install node@10
+          name: Install node@12
       - run:
           # https://reactnative.dev/docs/environment-setup
           environment:

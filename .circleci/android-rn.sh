@@ -5,7 +5,7 @@
 
 case $1 in
   export-env)
-    echo 'export PATH="$PATH:/usr/local/opt/node@10/bin:~/.yarn/bin:~/project/node_modules/.bin:~/project/example/node_modules/.bin"' >> $BASH_ENV
+    echo 'export PATH="$PATH:/usr/local/opt/node@12/bin:~/.yarn/bin:~/project/node_modules/.bin:~/project/example/node_modules/.bin"' >> $BASH_ENV
     echo 'export ANDROID_HOME="/usr/local/share/android-sdk"' >> $BASH_ENV
     echo 'export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"' >> $BASH_ENV
     echo 'export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH"' >> $BASH_ENV
@@ -20,8 +20,8 @@ case $1 in
 	echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
 	source ~/.bashrc
 	command -v nvm
-	nvm install 10
-	nvm alias default 10
+	nvm install 12
+	nvm alias default 12
 	;;
   sdkmanager)
 	yes | sdkmanager "platform-tools" "tools" >/dev/null
