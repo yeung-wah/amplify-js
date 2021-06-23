@@ -31,6 +31,7 @@ case $1 in
     yarn global add detox-cli
     touch .watchmanconfig
     node -v
+	;;
   sdkmanager)
     java -version
 	brew tap adoptopenjdk/openjdk
@@ -51,9 +52,11 @@ case $1 in
     adb devices
     adb kill-server
     ls -la ~/.android
+	;;
   create-android-emulator)
     export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 	avdmanager create avd --force --name TestingAVD --package "system-images;android-28;default;x86_64" --tag default --device pixel
+	;;
   start-emulator)
     export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
     $ANDROID_HOME/emulator/emulator @TestingAVD -version
