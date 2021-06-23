@@ -60,7 +60,7 @@ case $1 in
   start-emulator)
     export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
     $ANDROID_HOME/emulator/emulator @TestingAVD -version
-	$ANDROID_HOME/emulator/emulator @TestingAVD -cores 1 -gpu auto -accel on -memory 1024 -no-audio -no-snapshot -no-boot-anim -no-window
+	$ANDROID_HOME/emulator/emulator @TestingAVD -cores 1 -gpu auto -accel off -memory 1024 -no-audio -no-snapshot -no-boot-anim -no-window
 	;;
   wait-for-avd)
     boot=""
