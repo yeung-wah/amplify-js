@@ -3,3 +3,4 @@ dist
 www
 .stencil
 ../../node_modules
+angular-proxies.ts
