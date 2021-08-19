@@ -69,6 +69,10 @@ export const config: Config = {
 			componentCorePackage: '@aws-amplify/ui-components',
 			directivesProxyFile: '../amplify-ui-angular/src/directives/proxies.ts',
 		}),
+		angularOutputTarget({
+			componentCorePackage: '@aws-amplify/ui-components',
+			directivesProxyFile: './src/directives/angular-proxies.ts',
+		}),
 		reactOutputTarget({
 			componentCorePackage: '@aws-amplify/ui-components',
 			proxiesFile: '../amplify-ui-react/src/components.ts',
