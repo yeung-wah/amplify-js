@@ -16,4 +16,4 @@ export * from './components/amplify-sign-in/amplify-sign-in-interface';
 export * from './components/amplify-country-dial-code/amplify-country-dial-code-interface';
 export * from './components/amplify-select/amplify-select-interface';
 export * from './components/amplify-totp-setup/amplify-totp-setup-interface';
-export * from './directives/angular-proxies';
+export * as AngularProxies from './directives/angular-proxies';
