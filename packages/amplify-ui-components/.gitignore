@@ -24,5 +24,4 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 .env
 
-angular-proxies.ts
 aws-exports.*
