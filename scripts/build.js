@@ -4,6 +4,7 @@ const path = require('path');
 const utility = require('./utility');
 const ts = require('typescript');
 const externals = require('./rollup-externals');
+const esbuild_externals = require('./esbuild-externals');
 const winston = require('winston');
 const logger = winston.createLogger({
 	level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL.toLowerCase() : 'info',
@@ -261,7 +262,56 @@ function buildES6(typeScriptCompiler, watchMode) {
 	});
 }
 
+function esbuild() {
+	logger.info(`esbuilding: ${packageInfo.name} ${packageInfo.version}`);
+	const packageCategory = packageInfo.name.startsWith('@aws-amplify/') ? packageInfo.name.substring(13) : undefined;
+
+	const external = esbuild_externals[packageInfo.name];
+
+	const dependencies = external.map(packageName => {
+		return {
+			packageName,
+			category: packageName.startsWith('@aws-amplify/') ? packageName.substring(13) : undefined,
+			version: packageInfo.dependencies[packageName]
+		}
+	})
+
+	if (packageCategory) {
+		const esbuild = require('esbuild');
+
+		esbuild.build({
+			entryPoints: ['./src/index.ts'],
+			bundle: true,
+			outfile: `./dist/${packageCategory}-esm.js`,
+			format: 'esm',
+			minify: false,
+			define: {
+				global: 'window'
+			},
+			external,
+			plugins: [
+				{
+					name: 'dependency',
+					setup(build) {
+						for (const dependency of dependencies) {
+							const filter = new RegExp(dependency.packageName);
+							build.onResolve({
+								filter
+							}, (args) => {
+								return { path: `https://main.d2s4izc5nm039l.amplifyapp.com/packages/${dependency.category}/${dependency.version}/${dependency.category}-esm.js`, external: true }
+							})
+						}
+					}
+				}
+			],
+		})
+			.catch(() => process.exit(1))
+
+	}
+}
+
 function build(type, watchMode) {
+	if (type === 'esbuild') esbuild();
 	if (type === 'rollup') buildRollUp();
 
 	var typeScriptCompiler = watchMode
