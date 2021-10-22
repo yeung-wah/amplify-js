@@ -40,7 +40,7 @@ import {
 	CloudWatchDataTracker,
 	LoggingProvider,
 } from '../types/types';
-import { Credentials } from '../..';
+import { Credentials } from '../';
 import { ConsoleLogger as Logger } from '../Logger';
 import { getAmplifyUserAgent } from '../Platform';
 import { parseMobileHubConfig } from '../Parser';

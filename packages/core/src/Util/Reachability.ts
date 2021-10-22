@@ -1,4 +1,4 @@
-import { browserOrNode, isWebWorker } from '@aws-amplify/core';
+import { browserOrNode, isWebWorker } from '../';
 import Observable, { ZenObservable } from 'zen-observable-ts';
 
 type NetworkStatus = {
