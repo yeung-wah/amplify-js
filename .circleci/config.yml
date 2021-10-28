@@ -378,7 +378,7 @@ jobs:
             yarn
       - run: yarn bootstrap
       - run: yarn build
-      - run: yarn build:esm-build-dev
+      - run: yarn build:esm-bundle-dev
       # storing yarn.lock as an artifact, so that we can quickly get a dependency diff
       # with the last working build in the event that some upstream deps break the build in the future
       - store_artifacts:
@@ -1062,6 +1062,7 @@ workflows:
       - cdn_test:
           requires:
             - build
+            - integ_setup
             # - unit_test
           filters:
             <<: *cdn_test_branch
