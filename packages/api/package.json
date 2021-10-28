@@ -26,6 +26,7 @@
 		"build:cjs:watch": "node ./build es5 --watch",
 		"build:esm:watch": "node ./build es6 --watch",
 		"build:esm-bundle": "node ./build esbuild",
+		"build:esm-bundle-dev": "node ./build esbuild-dev",
 		"build": "npm run clean && npm run build:esm && npm run build:cjs",
 		"clean": "rimraf lib-esm lib dist",
 		"format": "echo \"Not implemented\"",
@@ -46,7 +47,11 @@
 	},
 	"dependencies": {
 		"@aws-amplify/api-graphql": "2.2.11",
-		"@aws-amplify/api-rest": "2.0.22"
+		"@aws-amplify/api-rest": "2.0.22",
+		"@aws-amplify/auth": "4.3.12",
+		"@aws-amplify/cache": "4.0.24",
+		"@aws-amplify/core": "4.3.4",
+		"@aws-amplify/pubsub": "4.1.14"
 	},
 	"jest": {
 		"globals": {

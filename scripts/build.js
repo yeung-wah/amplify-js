@@ -18,6 +18,9 @@ const logger = winston.createLogger({
 	],
 });
 
+const cdn = 'https://cdn.amplify.aws/';
+const localhost = 'http://localhost:8080/';
+
 // path of root
 const rootPath = path.resolve(__dirname, '../');
 // path of each package
@@ -262,7 +265,8 @@ function buildES6(typeScriptCompiler, watchMode) {
 	});
 }
 
-function esbuild() {
+function esbuild(dev) {
+	const origin = dev ? localhost : cdn;
 	logger.info(`esbuilding: ${packageInfo.name} ${packageInfo.version}`);
 	const packageCategory = packageInfo.name.startsWith('@aws-amplify/') ? packageInfo.name.substring(13) : undefined;
 
@@ -298,7 +302,7 @@ function esbuild() {
 							build.onResolve({
 								filter
 							}, (args) => {
-								return { path: `https://main.d2s4izc5nm039l.amplifyapp.com/packages/${dependency.category}/${dependency.version}/${dependency.category}-esm.js`, external: true }
+								return { path: `${origin}packages/${dependency.category}/${dependency.version}/${dependency.category}-esm.js`, external: true }
 							})
 						}
 					}
@@ -312,6 +316,7 @@ function esbuild() {
 
 function build(type, watchMode) {
 	if (type === 'esbuild') esbuild();
+	if (type === 'esbuild-dev') esbuild(true);
 	if (type === 'rollup') buildRollUp();
 
 	var typeScriptCompiler = watchMode
