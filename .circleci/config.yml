@@ -431,14 +431,21 @@ jobs:
             - amplify-js-samples-staging
 
   cdn_test:
+    parameters:
+      browser:
+        type: string
     working_directory: ~/
     executor: esm-test-executor
     steps:
       - prepare_test_cdn
       - test_cdn
       - integ_test_js:
-        test_name: 'Auth ESM bundle'
-        framework: javascript
+          test_name: 'Auth ESM bundle'
+          framework: javascript
+          category: auth
+          sample_name: esm-static
+          spec: auth-esm-bundle
+          browser: << parameters.browser >>
 
   integ_react_auth:
     parameters:
@@ -1068,6 +1075,9 @@ workflows:
             - build
             - integ_setup
             # - unit_test
+          matrix:
+            parameters:
+              <<: *test_browsers
           filters:
             <<: *cdn_test_branch
       - integ_react_auth:
