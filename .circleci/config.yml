@@ -32,6 +32,14 @@ executors:
           password: $DOCKERHUB_ACCESS_TOKEN
     resource_class: large
 
+  esm-test-executor:
+    docker:
+      - image: cypress/included:5.2.0
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_ACCESS_TOKEN
+    resource_class: large
+
   macos-executor:
     macos:
       xcode: 11.5.0
@@ -396,6 +404,14 @@ jobs:
           paths:
             - amplify-js-samples-staging
 
+  cdn_test:
+    executor: esm-test-executor
+    working_directory: ~/
+    steps:
+      - run:
+          name: 'testing'
+          command: |
+            ls -la
   integ_react_auth:
     parameters:
       browser:
@@ -983,6 +999,11 @@ releasable_branches: &releasable_branches
       - 1.0-stable
       - geo/main
 
+cdn_test_branch: &cdn_test_branch
+  branches:
+    only:
+      - feat/elorzafe-esmbundle
+
 test_browsers: &test_browsers
   browser: [chrome, firefox]
 
@@ -1014,6 +1035,13 @@ workflows:
       - unit_test:
           requires:
             - build
+      - cdn_test:
+          requires:
+            - build
+            - unit_test
+            - integ_setup
+          filters:
+            <<: *cdn_test_branch
       - integ_react_auth:
           requires:
             - integ_setup
