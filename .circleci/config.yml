@@ -87,6 +87,7 @@ commands:
     steps:
       - run:
           name: 'copy bundles to dist directory and run http-server'
+          background: true
           command: |
             cd ~/amplify-js
             node scripts/prepare-test-bundles.js
@@ -435,6 +436,9 @@ jobs:
     steps:
       - prepare_test_cdn
       - test_cdn
+      - integ_test_js:
+        test_name: 'Auth ESM bundle'
+        framework: javascript
 
   integ_react_auth:
     parameters:
