@@ -1038,7 +1038,7 @@ workflows:
       - cdn_test:
           requires:
             - build
-            - unit_test
+            # - unit_test
             - integ_setup
           filters:
             <<: *cdn_test_branch
