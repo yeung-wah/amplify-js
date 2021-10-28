@@ -83,6 +83,15 @@ commands:
             git --no-pager diff
             ~/amplify-js/.circleci/retry-yarn-script.sh -s publish:verdaccio -n 5 -r true
 
+  publish_to_local_http_server:
+    steps:
+      - run:
+          name: 'copy bundles to dist directory and run http-server'
+          command: |
+            cd ~/amplify-js
+            node scripts/prepare-test-bundles.js
+            npx http-server dist --cors
+
   prepare_test_env:
     steps:
       - attach_workspace:
@@ -97,6 +106,21 @@ commands:
           at: /root
       - restore_cache:
           key: amplify-js-{{ .Branch }}-{{ checksum "~/amplify-js-samples-staging/yarn.lock" }}
+
+  prepare_test_cdn:
+    steps:
+      - attach_workspace:
+          at: /root
+      - restore_cache:
+          key: amplify-js-{{ .Branch }}-{{ checksum "~/amplify-js-samples-staging/yarn.lock" }}
+      - publish_to_local_http_server
+
+  test_cdn:
+    steps:
+      - run:
+          name: 'testing env'
+          command: |
+            ls -la
 
   integ_test_js:
     parameters:
@@ -354,6 +378,7 @@ jobs:
             yarn
       - run: yarn bootstrap
       - run: yarn build
+      - run: yarn build:esm-build-dev
       # storing yarn.lock as an artifact, so that we can quickly get a dependency diff
       # with the last working build in the event that some upstream deps break the build in the future
       - store_artifacts:
@@ -405,13 +430,12 @@ jobs:
             - amplify-js-samples-staging
 
   cdn_test:
-    executor: esm-test-executor
     working_directory: ~/
+    executor: esm-test-executor
     steps:
-      - run:
-          name: 'testing'
-          command: |
-            ls -la
+      - prepare_test_cdn
+      - test_cdn
+
   integ_react_auth:
     parameters:
       browser:
@@ -1039,7 +1063,6 @@ workflows:
           requires:
             - build
             # - unit_test
-            - integ_setup
           filters:
             <<: *cdn_test_branch
       - integ_react_auth:
