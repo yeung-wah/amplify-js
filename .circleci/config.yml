@@ -1032,6 +1032,7 @@ workflows:
       - integ_setup:
           filters:
             <<: *releasable_branches
+            <<: *cdn_test_branch
       - unit_test:
           requires:
             - build
