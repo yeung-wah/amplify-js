@@ -464,7 +464,6 @@ jobs:
     executor: esm-test-executor
     steps:
       - prepare_test_cdn
-      - test_cdn
       - integ_test_cdn:
           test_name: 'Auth ESM bundle'
           framework: javascript
