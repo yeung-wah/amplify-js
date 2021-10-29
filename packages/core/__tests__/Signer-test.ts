@@ -1,5 +1,5 @@
 import Signer from '../src/Signer';
-import { DateUtils } from '../src';
+import { DateUtils } from '../src/Util/DateUtils';
 
 jest.mock('@aws-sdk/util-hex-encoding', () => ({
 	...jest.requireActual('@aws-sdk/util-hex-encoding'),
