@@ -983,6 +983,11 @@ releasable_branches: &releasable_branches
       - 1.0-stable
       - geo/main
 
+ts_38_branch: &ts_38_branch
+  branches:
+    only:
+      - kj/ts38integ
+
 test_browsers: &test_browsers
   browser: [chrome, firefox]
 
@@ -1010,7 +1015,7 @@ workflows:
       - build
       - integ_setup:
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - unit_test:
           requires:
             - build
@@ -1019,7 +1024,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1028,13 +1033,13 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_angular_auth:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1043,7 +1048,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1052,7 +1057,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1061,7 +1066,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1070,7 +1075,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1079,7 +1084,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1088,7 +1093,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1097,7 +1102,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1106,7 +1111,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1115,7 +1120,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1124,7 +1129,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1133,7 +1138,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1142,7 +1147,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1151,7 +1156,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1160,7 +1165,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1169,13 +1174,13 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_react_amazon_cognito_identity_js_cookie_storage:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1184,7 +1189,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1193,13 +1198,13 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_react_device_tracking:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
@@ -1208,37 +1213,37 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_rn_ios_storage_multipart_progress:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_rn_ios_push_notifications:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       - integ_rn_android_storage:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
       # - integ_rn_android_storage_multipart_progress:
       #     requires:
       #       - integ_setup
       #       - build
       #     filters:
-      #       <<: *releasable_branches
+      #       <<: *ts_38_branch
       - integ_datastore_auth:
           requires:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *datastore_auth_scenarios
@@ -1247,7 +1252,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *ts_38_branch
           matrix:
             parameters:
               <<: *test_browsers
