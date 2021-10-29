@@ -14,8 +14,13 @@
 import { API } from './API';
 
 export { API, APIClass } from './API';
-export * from '@aws-amplify/api-graphql';
+export {
+	graphqlOperation,
+	GraphQLAuthError,
+	GRAPHQL_AUTH_MODE,
+} from '@aws-amplify/api-graphql';
 
+export type { GraphQLResult } from '@aws-amplify/api-graphql';
 /*
  * @deprecated use named import
  */
