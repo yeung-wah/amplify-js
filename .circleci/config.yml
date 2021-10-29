@@ -116,13 +116,6 @@ commands:
           key: amplify-js-{{ .Branch }}-{{ checksum "~/amplify-js-samples-staging/yarn.lock" }}
       - publish_to_local_http_server
 
-  test_cdn:
-    steps:
-      - run:
-          name: 'testing env'
-          command: |
-            ls -la
-
   integ_test_js:
     parameters:
       test_name:
@@ -156,6 +149,39 @@ commands:
           command: |
             cd ~/amplify-js-samples-staging
             ~/amplify-js/.circleci/retry-yarn-script.sh -s 'ci:test << parameters.framework >> << parameters.category >> << parameters.sample_name >> << parameters.spec >> << parameters.browser >> prod' -n 3
+      - store_artifacts:
+          path: ~/amplify-js-samples-staging/cypress/videos
+      - store_artifacts:
+          path: ~/amplify-js-samples-staging/cypress/screenshots
+
+  integ_test_cdn:
+    parameters:
+      test_name:
+        type: string
+      framework:
+        type: string
+      category:
+        type: string
+      sample_name:
+        type: string
+      spec:
+        # optional - the script will use sample_name by default
+        type: string
+        default: ''
+      browser:
+        type: string
+        default: ''
+    steps:
+      - run:
+          name: 'Install << parameters.test_name >> sample'
+          command: |
+            echo "Current NPM registry: " $(yarn config get registry)
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install' -n 3
+      - run:
+          name: 'Run cypress tests for << parameters.test_name >> sample'
+          command: |
+            cd ~/amplify-js-samples-staging
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'ci:test << parameters.framework >> << parameters.category >> << parameters.sample_name >> << parameters.spec >> << parameters.browser >> dev' -n 3
       - store_artifacts:
           path: ~/amplify-js-samples-staging/cypress/videos
       - store_artifacts:
@@ -439,7 +465,7 @@ jobs:
     steps:
       - prepare_test_cdn
       - test_cdn
-      - integ_test_js:
+      - integ_test_cdn:
           test_name: 'Auth ESM bundle'
           framework: javascript
           category: auth
@@ -1039,6 +1065,11 @@ cdn_test_branch: &cdn_test_branch
     only:
       - feat/elorzafe-esmbundle
 
+not_cdn_test_branch: &not_cdn_test_branch
+  branches:
+    ignore:
+      - feat/elorzafe-esmbundle
+
 test_browsers: &test_browsers
   browser: [chrome, firefox]
 
@@ -1070,6 +1101,8 @@ workflows:
       - unit_test:
           requires:
             - build
+          filters:
+            <<: *not_cdn_test_branch
       - cdn_test:
           requires:
             - build
