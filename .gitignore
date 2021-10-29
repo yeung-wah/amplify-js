@@ -18,8 +18,5 @@ packages/**/cjs/
 packages/**/cypress/videos/
 yarn.lock
 package-lock.json
-<<<<<<< HEAD
 packages/*/.watchmanconfig
-=======
 dist/
->>>>>>> adding dist dir to .gitignore
