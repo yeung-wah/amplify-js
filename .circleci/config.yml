@@ -1100,8 +1100,6 @@ workflows:
       - unit_test:
           requires:
             - build
-          filters:
-            <<: *not_cdn_test_branch
       - cdn_test:
           requires:
             - build
