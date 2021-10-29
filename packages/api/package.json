@@ -8,6 +8,13 @@
 	"react-native": {
 		"./lib/index": "./lib-esm/index.js"
 	},
+	"typesVersions": {
+		"<3.8": {
+		  "types/*": [
+			"types/ts3.7/types/*"
+		  ]
+		}
+	},
 	"sideEffects": [
 		"./src/API.ts",
 		"./lib/API.js",
