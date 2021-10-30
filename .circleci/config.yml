@@ -404,9 +404,7 @@ jobs:
             mv .yarnrc ._yarnrc
             yarn
       - run: yarn bootstrap
-      # - run: yarn build
-      - run: npx lerna run build --scope amazon-cognito-identity-js
-      - run: npx lerna run build --scope @aws-amplify/cache
+      - run: yarn build
       - run: yarn build:esm-bundle-dev
       # storing yarn.lock as an artifact, so that we can quickly get a dependency diff
       # with the last working build in the event that some upstream deps break the build in the future
