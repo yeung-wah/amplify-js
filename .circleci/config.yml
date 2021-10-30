@@ -1015,22 +1015,22 @@ jobs:
           spec: search-outside-map
           browser: << parameters.browser >>
 
-  deploy_to_releases_brach: 
+  deploy_to_releases_brach:
     executor: build-executor
     working_directory: ~/
     steps:
-      -  attach_workspace:
-        at: ~/
-      - run: 
-        name: 'check-in esm bundles to releases branch'
-        command: |
-          git clone git@github.com:aws-amplify/amplify-js.git releases-branch
-          cd releases-branch
-          git checkout releases-esm-test
-          node ../amplify-js/scripts/prepare-test-bundles.js ../releases-branch
-          git add .
-          git commit -m "chore(release): esm bundle release"
-          git push origin releases-esm-test
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: 'check-in esm bundles to releases branch'
+          command: |
+            git clone git@github.com:aws-amplify/amplify-js.git releases-branch
+            cd releases-branch
+            git checkout releases-esm-test
+            node ../amplify-js/scripts/prepare-test-bundles.js ../releases-branch
+            git add .
+            git commit -m "chore(release): esm bundle release"
+            git push origin releases-esm-test
 
   deploy:
     executor: macos-executor
@@ -1130,9 +1130,11 @@ workflows:
           filters:
             <<: *cdn_test_branch
       - deploy_to_releases_brach:
-        requires:
-          - cdn_test
-          - unit_test
+          requires:
+            - cdn_test
+            - unit_test
+          filters:
+            <<: *cdn_test_branch
       - integ_react_auth:
           requires:
             - integ_setup
