@@ -1022,6 +1022,8 @@ jobs:
       - run:
           name: 'check-in esm bundles to releases branch'
           command: |
+            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            echo $SSH_HOST_PUBLIC_KEY >> ~/.ssh/known_hosts
             git clone git@github.com:aws-amplify/amplify-js.git releases-branch
             cd releases-branch
             git checkout releases-esm-test
