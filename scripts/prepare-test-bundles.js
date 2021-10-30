@@ -18,16 +18,17 @@ const packages = [
 	'xr'
 ];
 
-function copyBundlesForTest() {
+function copyBundlesForTest(rootPath) {
+	const localPathToPaste = rootPath ? rootPath : process.cwd();
 	const packagesUrl = {};
 
 	for (const package of packages) {
-		const pkgRootPath = path.resolve(process.cwd(), `./packages/${package}/`);
+		const pkgRootPath = path.resolve(__dirname, `../packages/${package}/`);
 		const packageJsonPath = path.join(pkgRootPath, 'package');
 		const packageInfo = require(packageJsonPath);
 		const { version } = packageInfo;
 		const src = path.join(pkgRootPath, `dist/${package}-esm.js`);
-		const dstDirectory = path.resolve(process.cwd(), `./dist/packages/${package}/${version}/`)
+		const dstDirectory = path.resolve(localPathToPaste, `./dist/packages/${package}/${version}/`)
 		const dst = path.join(dstDirectory, `${package}-esm.js`);
 
 		if (!fs.existsSync(dstDirectory)) {
@@ -42,4 +43,5 @@ function copyBundlesForTest() {
 	fs.writeFileSync(path.resolve(process.cwd(), './dist/modules.js'), `export default ${JSON.stringify(packagesUrl, null, 2)}`);
 }
 
-copyBundlesForTest();
+
+copyBundlesForTest(process.argv[2]);

@@ -404,7 +404,9 @@ jobs:
             mv .yarnrc ._yarnrc
             yarn
       - run: yarn bootstrap
-      - run: yarn build
+      # - run: yarn build
+      - run: npx lerna run build --scope amazon-cognito-identity-js
+      - run: npx lerna run build --scope @aws-amplify/cache
       - run: yarn build:esm-bundle-dev
       # storing yarn.lock as an artifact, so that we can quickly get a dependency diff
       # with the last working build in the event that some upstream deps break the build in the future
@@ -1012,6 +1014,24 @@ jobs:
           sample_name: search-outside-map
           spec: search-outside-map
           browser: << parameters.browser >>
+
+  deploy_to_releases_brach: 
+    executor: build-executor
+    working_directory: ~/
+    steps:
+      -  attach_workspace:
+        at: ~/
+      - run: 
+        name: 'check-in esm bundles to releases branch'
+        command: |
+          git clone git@github.com:aws-amplify/amplify-js.git releases-branch
+          cd releases-branch
+          git checkout releases-esm-test
+          node ../amplify-js/scripts/prepare-test-bundles.js ../releases-branch
+          git add .
+          git commit -m "chore(release): esm bundle release"
+          git push origin releases-esm-test
+
   deploy:
     executor: macos-executor
     working_directory: ~/amplify-js
@@ -1104,12 +1124,15 @@ workflows:
           requires:
             - build
             - integ_setup
-            # - unit_test
           matrix:
             parameters:
               <<: *test_browsers
           filters:
             <<: *cdn_test_branch
+      - deploy_to_releases_brach:
+        requires:
+          - cdn_test
+          - unit_test
       - integ_react_auth:
           requires:
             - integ_setup
