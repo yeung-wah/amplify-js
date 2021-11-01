@@ -19,7 +19,6 @@ import {
 import {
 	S3Client,
 	PutObjectCommand,
-	PutObjectRequest,
 	CreateMultipartUploadCommand,
 	UploadPartCommand,
 	CompleteMultipartUploadCommand,
@@ -27,6 +26,7 @@ import {
 	ListPartsCommand,
 	AbortMultipartUploadCommand,
 	CompletedPart,
+	PutObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import {
 	AxiosHttpHandler,
@@ -60,7 +60,7 @@ export class AWSS3ProviderManagedUpload {
 
 	// Data for current upload
 	private body = null;
-	private params: PutObjectRequest = null;
+	private params: PutObjectCommandInput = null;
 	private opts = null;
 	private completedParts: CompletedPart[] = [];
 	private cancel = false;
@@ -70,7 +70,11 @@ export class AWSS3ProviderManagedUpload {
 	private totalBytesToUpload = 0;
 	private emitter: events.EventEmitter = null;
 
-	constructor(params: PutObjectRequest, opts, emitter: events.EventEmitter) {
+	constructor(
+		params: PutObjectCommandInput,
+		opts,
+		emitter: events.EventEmitter
+	) {
 		this.params = params;
 		this.opts = opts;
 		this.emitter = emitter;
