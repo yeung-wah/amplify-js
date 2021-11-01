@@ -1019,11 +1019,15 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys:
+            - amplify-ssh-deps-{{ .Branch }}
+            - amplify-ssh-deps
       - run:
           name: 'check-in esm bundles to releases branch'
           command: |
-            git config --global user.email $NPM_EMAIL
-            git config --global user.name $NPM_USER
+            git config --global user.email $GITHUB_EMAIL
+            git config --global user.name $GITHUB_USER
             mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             echo $SSH_HOST_PUBLIC_KEY >> ~/.ssh/known_hosts
             git clone git@github.com:aws-amplify/amplify-js.git releases-branch
