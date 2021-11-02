@@ -1,6 +1,6 @@
 {
 	"name": "@aws-amplify/api",
-	"version": "4.0.22",
+	"version": "4.0.21",
 	"description": "Api category of aws-amplify",
 	"main": "./lib/index.js",
 	"module": "./lib-esm/index.js",
@@ -11,7 +11,7 @@
 	"typesVersions": {
 		"<3.8": {
 		  "./lib-esm/index.d.ts": [
-			"types/ts3.7/types/index.d.ts"
+			"types/ts3.7/index.d.ts"
 		  ]
 		}
 	},
