@@ -1,5 +1,5 @@
-import { API } from '../../lib-esm/API';
-export { API, APIClass } from '../../lib-esm/API';
+import { API } from './lib-esm/API';
+export { API, APIClass } from './lib-esm/API';
 export {
 	graphqlOperation,
 	GraphQLAuthError,
