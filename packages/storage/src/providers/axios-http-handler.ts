@@ -185,7 +185,11 @@ export class AxiosHttpHandler implements HttpHandler {
 					// for axios' cancel error, we should re-throw it back so it's not considered an s3client error
 					// if we return empty, or an abitrary error HttpResponse, it will be hard to debug down the line
 					if (axios.isCancel(error)) {
-						throw error;
+						const err = new Error(error);
+						Object.defineProperty(err, '__CANCEL__', {
+							value: true,
+						});
+						throw err;
 					}
 					// otherwise, we should re-construct an HttpResponse from the error, so that it can be passed down to other
 					// aws sdk middleware (e.g retry, clock skew correction, error message serializing)
