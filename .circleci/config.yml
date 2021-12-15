@@ -983,6 +983,11 @@ releasable_branches: &releasable_branches
       - 1.0-stable
       - geo/main
 
+test_branches: &test_branches
+  branches:
+    only:
+      - test-graphql15
+
 test_browsers: &test_browsers
   browser: [chrome, firefox]
 
@@ -1010,7 +1015,7 @@ workflows:
       - build
       - integ_setup:
           filters:
-            <<: *releasable_branches
+            <<: *test_branches
       - unit_test:
           requires:
             - build
@@ -1097,7 +1102,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *test_branches
           matrix:
             parameters:
               <<: *test_browsers
@@ -1106,7 +1111,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *test_branches
           matrix:
             parameters:
               <<: *test_browsers
@@ -1115,7 +1120,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *test_branches
           matrix:
             parameters:
               <<: *test_browsers
@@ -1256,7 +1261,7 @@ workflows:
             - integ_setup
             - build
           filters:
-            <<: *releasable_branches
+            <<: *test_branches
           browser: chrome
       - deploy:
           filters:
