@@ -26,10 +26,11 @@ import { ConsoleLogger as Logger, Hub, urlSafeEncode } from '@aws-amplify/core';
 import sha256 from 'crypto-js/sha256';
 import Base64 from 'crypto-js/enc-base64';
 
-const AMPLIFY_SYMBOL = (typeof Symbol !== 'undefined' &&
-typeof Symbol.for === 'function'
-	? Symbol.for('amplify_default')
-	: '@@amplify_default') as Symbol;
+const AMPLIFY_SYMBOL = (
+	typeof Symbol !== 'undefined' && typeof Symbol.for === 'function'
+		? Symbol.for('amplify_default')
+		: '@@amplify_default'
+) as Symbol;
 
 const dispatchAuthEvent = (event: string, data: any, message: string) => {
 	Hub.dispatch('auth', { event, data, message }, 'Auth', AMPLIFY_SYMBOL);
@@ -129,7 +130,12 @@ export default class OAuth {
 		const redirectSignInPathname =
 			parse(this._config.redirectSignIn).pathname || '/';
 
-		if (!code || currentUrlPathname !== redirectSignInPathname) {
+		if (currentUrlPathname !== redirectSignInPathname) {
+			// throw an explicit error to notify caller about invalid input url
+			throw new Error('Unregistered OAuth Callback');
+		}
+
+		if (!code) {
 			return;
 		}
 
@@ -169,18 +175,15 @@ export default class OAuth {
 			.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
 			.join('&');
 
-		const {
-			access_token,
-			refresh_token,
-			id_token,
-			error,
-		} = await ((await fetch(oAuthTokenEndpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body,
-		})) as any).json();
+		const { access_token, refresh_token, id_token, error } = await (
+			(await fetch(oAuthTokenEndpoint, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body,
+			})) as any
+		).json();
 
 		if (error) {
 			throw new Error(error);
