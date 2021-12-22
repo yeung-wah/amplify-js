@@ -49,7 +49,7 @@ const normalizeHeaders = (
 };
 
 export const reactNativeRequestTransformer: AxiosTransformer[] = [
-	function(data, headers) {
+	function (data, headers) {
 		if (isBlob(data)) {
 			normalizeHeaders(headers, 'Content-Type');
 			normalizeHeaders(headers, 'Accept');
@@ -62,6 +62,7 @@ export const reactNativeRequestTransformer: AxiosTransformer[] = [
 
 export type AxiosHttpHandlerOptions = HttpHandlerOptions & {
 	cancelTokenSource?: CancelTokenSource;
+	emitter?: events.EventEmitter;
 };
 
 export class AxiosHttpHandler implements HttpHandler {
@@ -81,7 +82,9 @@ export class AxiosHttpHandler implements HttpHandler {
 		options: AxiosHttpHandlerOptions
 	): Promise<{ response: HttpResponse }> {
 		const requestTimeoutInMs = this.httpOptions.requestTimeout;
-		const emitter = this.emitter;
+		// prioritize the call specific event emitter, this is useful for multipart upload as each individual parts has
+		// their own event emitter, without having to create s3client for every individual calls.
+		const emitter = options.emitter || this.emitter;
 
 		let path = request.path;
 		if (request.query) {
@@ -134,11 +137,11 @@ export class AxiosHttpHandler implements HttpHandler {
 			}
 		}
 		if (emitter) {
-			axiosRequest.onUploadProgress = function(event) {
+			axiosRequest.onUploadProgress = function (event) {
 				emitter.emit(SEND_UPLOAD_PROGRESS_EVENT, event);
 				logger.debug(event);
 			};
-			axiosRequest.onDownloadProgress = function(event) {
+			axiosRequest.onDownloadProgress = function (event) {
 				emitter.emit(SEND_DOWNLOAD_PROGRESS_EVENT, event);
 				logger.debug(event);
 			};
