@@ -259,7 +259,7 @@ commands:
           command: |
             cd ~/amplify-js
             ./.circleci/android-rn.sh install-node
-          name: Install node@12
+          name: Install node@10
       - run:
           # https://reactnative.dev/docs/environment-setup
           environment:
@@ -860,13 +860,6 @@ jobs:
     steps:
       - integ_test_rn_ios
 
-  integ_rn_android_ds_sqlite:
-    executor: macos-executor
-    <<: *test_env_vars
-    working_directory: ~/amplify-js-samples-staging/samples/react-native/datastore/SQLiteAdapter
-    steps:
-      - integ_test_rn_android
-
   integ_rn_ios_storage_multipart_progress:
     executor: macos-executor
     <<: *test_env_vars
@@ -1263,12 +1256,6 @@ workflows:
       #     filters:
       #       <<: *releasable_branches
       - integ_rn_ios_ds_sqlite:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-      - integ_rn_android_ds_sqlite:
           requires:
             - integ_setup
             - build
