@@ -1,11 +1,9 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"tsBuildInfoFile": "./lib-esm-new/.tsbuildinfo",
+		"tsBuildInfoFile": "./lib-esm/.tsbuildinfo",
 		"typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
-		"outDir": "lib-esm-new",
-		"strict": true,
-		"noImplicitAny": true
+		"outDir": "lib-esm"
 	},
 	"include": ["./src"]
 }
