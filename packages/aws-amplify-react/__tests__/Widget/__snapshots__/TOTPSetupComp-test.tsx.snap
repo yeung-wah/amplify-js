@@ -135,7 +135,12 @@ exports[`TOTPSetupComp test render test render with code and setupMessage 1`] = 
       <div
         className="Totp__totpQrcode___1crLx"
       >
-        <Component
+        <QRCode
+          bgColor="#FFFFFF"
+          fgColor="#000000"
+          level="L"
+          renderAs="canvas"
+          size={128}
           value="code"
         />
       </div>

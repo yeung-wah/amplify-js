@@ -5,6 +5,7 @@ module.exports = {
 				esModuleInterop: true,
 				jsx: 'react',
 			},
+			diagnostics: false,
 		},
 	},
 	preset: 'ts-jest',

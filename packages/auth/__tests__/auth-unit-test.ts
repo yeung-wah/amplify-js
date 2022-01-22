@@ -12,11 +12,7 @@ import {
 
 const MAX_DEVICES: number = 60;
 
-jest.mock('crypto-js/sha256', () => {
-	return {
-		default: jest.fn(() => ''),
-	};
-});
+jest.mock('crypto-js/sha256', () => jest.fn(() => ''));
 
 jest.mock('../src/OAuth/oauthStorage', () => {
 	return {
@@ -658,9 +654,10 @@ describe('auth unit test', () => {
 
 			await auth.resendSignUp('username');
 
-			expect(
-				await CognitoUser.prototype.resendConfirmationCode
-			).toBeCalledWith(jasmine.any(Function), { foo: 'bar' });
+			expect(await CognitoUser.prototype.resendConfirmationCode).toBeCalledWith(
+				jasmine.any(Function),
+				{ foo: 'bar' }
+			);
 			spyon.mockClear();
 		});
 
@@ -670,9 +667,10 @@ describe('auth unit test', () => {
 
 			await auth.resendSignUp('username', { custom: 'value' });
 
-			expect(
-				await CognitoUser.prototype.resendConfirmationCode
-			).toBeCalledWith(jasmine.any(Function), { custom: 'value' });
+			expect(await CognitoUser.prototype.resendConfirmationCode).toBeCalledWith(
+				jasmine.any(Function),
+				{ custom: 'value' }
+			);
 			spyon.mockClear();
 		});
 
@@ -2698,20 +2696,20 @@ describe('auth unit test', () => {
 				Pool: userPool,
 			});
 
-			const attributeNames = [
-				'email', 'phone_number'
-			];
+			const attributeNames = ['email', 'phone_number'];
 
 			const spyon = jest
 				.spyOn(Auth.prototype, 'userSession')
 				.mockImplementationOnce(() => {
-					return new Promise((res) => {
+					return new Promise(res => {
 						res(session);
 					});
 				});
 
 			expect.assertions(1);
-			expect(await auth.deleteUserAttributes(user, attributeNames)).toBe('SUCCESS');
+			expect(await auth.deleteUserAttributes(user, attributeNames)).toBe(
+				'SUCCESS'
+			);
 
 			spyon.mockClear();
 		});
@@ -2728,11 +2726,10 @@ describe('auth unit test', () => {
 
 			expect(await CognitoUser.prototype.deleteAttributes).toBeCalledWith(
 				['email', 'phone_number'],
-				jasmine.any(Function),
+				jasmine.any(Function)
 			);
 			spyon.mockClear();
 		});
-
 	});
 
 	describe('federatedSignIn test', () => {

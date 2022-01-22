@@ -14,10 +14,10 @@
 		"module": "es2015",
 		"moduleResolution": "node",
 		"declaration": true,
-		"noEmitOnError": true,
 		"incremental": true,
 		"sourceMap": true,
-		"types": ["node"]
+		"types": ["jest", "node"],
+		"allowJs": true
 	},
-	"exclude": ["node_modules", "**/__tests__/**/*"]
+	"exclude": ["node_modules"]
 }

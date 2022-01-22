@@ -5,5 +5,5 @@
 		"typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
 		"outDir": "lib-esm"
 	},
-	"include": ["./src"]
+	"include": ["src", "__tests__"]
 }

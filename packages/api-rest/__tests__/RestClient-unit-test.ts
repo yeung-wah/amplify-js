@@ -1,4 +1,6 @@
 import { Signer } from '@aws-amplify/core';
+import { RestClient } from '../src/RestClient';
+import axios, { CancelTokenStatic } from 'axios';
 
 jest
 	.spyOn(Signer, 'sign')
@@ -6,42 +8,31 @@ jest
 		(request: any, access_info: any, service_info?: any) => request
 	);
 
-jest.mock('axios', () => {
-	return {
-		default: signed_params => {
-			return new Promise((res, rej) => {
-				const withCredentialsSuffix =
-					signed_params && signed_params.withCredentials
-						? '-withCredentials'
-						: '';
-				if (
-					signed_params &&
-					signed_params.headers &&
-					signed_params.headers.reject
-				) {
-					rej({
-						data: 'error' + withCredentialsSuffix,
-					});
-				} else if (signed_params && signed_params.responseType === 'blob') {
-					res({
-						data: 'blob' + withCredentialsSuffix,
-					});
-				} else if (signed_params && signed_params.data instanceof FormData) {
-					res({
-						data: signed_params.data.get('key') + withCredentialsSuffix,
-					});
-				} else {
-					res({
-						data: 'data' + withCredentialsSuffix,
-					});
-				}
-			});
-		},
-	};
-});
-
-import { RestClient } from '../src/RestClient';
-import axios, { CancelTokenStatic } from 'axios';
+jest.mock('axios', () =>
+	jest.fn(signedParams => {
+		return new Promise((res, rej) => {
+			const withCredentialsSuffix =
+				signedParams && signedParams.withCredentials ? '-withCredentials' : '';
+			if (signedParams && signedParams.headers && signedParams.headers.reject) {
+				rej({
+					data: 'error' + withCredentialsSuffix,
+				});
+			} else if (signedParams && signedParams.responseType === 'blob') {
+				res({
+					data: 'blob' + withCredentialsSuffix,
+				});
+			} else if (signedParams && signedParams.data instanceof FormData) {
+				res({
+					data: signedParams.data.get('key') + withCredentialsSuffix,
+				});
+			} else {
+				res({
+					data: 'data' + withCredentialsSuffix,
+				});
+			}
+		});
+	})
+);
 
 axios.CancelToken = <CancelTokenStatic>{
 	source: () => ({ token: null, cancel: null }),
@@ -476,9 +467,7 @@ describe('RestClient test', () => {
 			const restClient = new RestClient(apiOptions);
 			// if the request doesn't exist we can still say it is canceled successfully
 			expect(
-				restClient.cancel(
-					new Promise<any>((req, res) => {})
-				)
+				restClient.cancel(new Promise<any>((req, res) => {}))
 			).toBeTruthy();
 		});
 

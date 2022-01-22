@@ -13,7 +13,7 @@ import {
 } from '@aws-amplify/core';
 import PubSub from '@aws-amplify/pubsub';
 import Cache from '@aws-amplify/cache';
-import * as Observable from 'zen-observable';
+import Observable from 'zen-observable';
 import axios, { CancelTokenStatic } from 'axios';
 
 axios.CancelToken = <CancelTokenStatic>{
@@ -971,11 +971,13 @@ describe('API test', () => {
 			const doc = parse(SubscribeToEventComments);
 			const query = print(doc);
 
-			(api.graphql({
-				query,
-				variables,
-				authMode: GRAPHQL_AUTH_MODE.OPENID_CONNECT,
-			}) as any).subscribe();
+			(
+				api.graphql({
+					query,
+					variables,
+					authMode: GRAPHQL_AUTH_MODE.OPENID_CONNECT,
+				}) as any
+			).subscribe();
 
 			expect(spyon_pubsub).toBeCalledWith(
 				'',
@@ -1022,9 +1024,9 @@ describe('API test', () => {
 			const doc = parse(SubscribeToEventComments);
 			const query = print(doc);
 
-			const observable = (api.graphql(
-				graphqlOperation(query, variables)
-			) as Observable<object>).subscribe({
+			const observable = (
+				api.graphql(graphqlOperation(query, variables)) as Observable<object>
+			).subscribe({
 				next: () => {
 					expect(PubSub.subscribe).toHaveBeenCalledTimes(1);
 					const subscribeOptions = (PubSub.subscribe as any).mock.calls[0][1];
@@ -1079,10 +1081,12 @@ describe('API test', () => {
 				'x-custom-header': 'value',
 			};
 
-			const observable = (api.graphql(
-				graphqlOperation(query, variables),
-				additionalHeaders
-			) as Observable<object>).subscribe({
+			const observable = (
+				api.graphql(
+					graphqlOperation(query, variables),
+					additionalHeaders
+				) as Observable<object>
+			).subscribe({
 				next: () => {
 					expect(PubSub.subscribe).toHaveBeenCalledTimes(1);
 					const subscribeOptions = (PubSub.subscribe as any).mock.calls[0][1];

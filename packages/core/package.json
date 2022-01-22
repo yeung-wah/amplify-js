@@ -24,7 +24,7 @@
 		"build:cjs": "node ./build es5 && webpack && webpack --config ./webpack.config.dev.js",
 		"build:esm": "rimraf lib-esm && tsc -p ./tsconfig.json",
 		"build:cjs:watch": "node ./build es5 --watch",
-		"build:esm:watch": "rimraf lib-esm && node ./build es6 --watch",
+		"build:esm:watch": "rimraf lib-esm && npm run build:esm -w",
 		"build": "npm run clean && npm run generate-version && npm run build:esm && npm run build:cjs",
 		"generate-version": "genversion src/Platform/version.ts --es6 --semi",
 		"clean": "rimraf lib-esm lib dist",
@@ -67,17 +67,7 @@
 	"jest": {
 		"globals": {
 			"ts-jest": {
-				"diagnostics": false,
-				"tsConfig": {
-					"lib": [
-						"es5",
-						"es2015",
-						"dom",
-						"esnext.asynciterable",
-						"es2017.object"
-					],
-					"allowJs": true
-				}
+				"diagnostics": false
 			}
 		},
 		"transform": {

@@ -33,6 +33,7 @@ describe('AWSCloudWatchProvider', () => {
 	it('should initiate a timer when the provider is created', () => {
 		const timer_spy = jest.spyOn(
 			AWSCloudWatchProvider.prototype,
+			// @ts-ignore
 			'_initiateLogPushInterval'
 		);
 		const provider = new AWSCloudWatchProvider();
