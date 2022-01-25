@@ -12,6 +12,7 @@
  */
 
 import { Auth } from './Auth';
+import { AuthPlug } from './AuthPlug';
 import { CognitoHostedUIIdentityProvider, SignUpParams } from './types/Auth';
 import {
 	CognitoUser,
@@ -26,6 +27,7 @@ import { AuthErrorStrings } from './common/AuthErrorStrings';
 export default Auth;
 export {
 	Auth,
+	AuthPlug,
 	CognitoUser,
 	CookieStorage,
 	CognitoHostedUIIdentityProvider,
@@ -33,3 +35,5 @@ export {
 	appendToCognitoUserAgent,
 	AuthErrorStrings,
 };
+export * from './Providers';
+export * from './types/Provider';

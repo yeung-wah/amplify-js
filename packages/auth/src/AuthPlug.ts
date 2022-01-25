@@ -17,10 +17,14 @@ import {
 	Hub,
 	Parser,
 } from '@aws-amplify/core';
+import { CognitoUser } from 'amazon-cognito-identity-js';
 import { AWSCognitoProvider } from './Providers/AWSCognitoProvider';
+import { UsernamePasswordOpts } from './types';
 import { AuthProvider } from './types/Provider';
 
 const logger = new Logger('AuthClass');
+
+const DEFAULT_PROVIDER = 'AWSCognito';
 
 const AMPLIFY_SYMBOL = (
 	typeof Symbol !== 'undefined' && typeof Symbol.for === 'function'
@@ -36,7 +40,7 @@ export const dispatchAuthEvent = (
 	Hub.dispatch('auth', { event, data, message }, 'Auth', AMPLIFY_SYMBOL);
 };
 
-export class AuthClass {
+export class AuthPlugClass {
 	private _config;
 	// not array only one plugin at a time
 	private _pluggables: AuthProvider[];
@@ -100,13 +104,12 @@ export class AuthClass {
 		logger.debug('configuring Auth', config);
 		if (!config) return this._config;
 
-		const conf = Object.assign(
+		this._config = Object.assign(
 			{},
 			this._config,
 			Parser.parseMobilehubConfig(config).Auth,
 			config
 		);
-		this._config = conf;
 
 		this._pluggables.forEach(pluggable => {
 			pluggable.configure(this._config[pluggable.getProviderName()]);
@@ -124,4 +127,31 @@ export class AuthClass {
 		logger.debug('current configuration', this._config);
 		return this._config;
 	}
+
+	public async signIn(
+		usernameOrSignInOpts: string | UsernamePasswordOpts,
+		pw?: string,
+		clientMetadata?: { [key: string]: string },
+		config?: any
+	): Promise<CognitoUser | any> {
+		const provider = config?.provider || DEFAULT_PROVIDER;
+		const prov = this._pluggables.find(
+			pluggable => pluggable.getProviderName() === provider
+		);
+		if (prov === undefined) {
+			logger.debug('No plugin found with providerName', provider);
+			return Promise.reject('No plugin found ');
+		}
+		const signInResponse = prov.signIn(
+			usernameOrSignInOpts,
+			pw,
+			clientMetadata
+		);
+
+		return signInResponse;
+	}
 }
+
+export const AuthPlug = new AuthPlugClass();
+
+Amplify.register(AuthPlug);
