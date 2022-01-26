@@ -1,5 +1,6 @@
 import {
 	Credentials,
+	Hub,
 	Logger,
 	StorageHelper,
 	UniversalStorage,
@@ -38,7 +39,26 @@ export class AWSCognitoProvider implements AuthProvider {
 	Credentials = Credentials;
 	private _config;
 
-	configure(config: AuthOptions): object {
+	constructor(config?: AuthOptions) {
+		this._config = config ? config : {};
+
+		Hub.listen('auth', ({ payload }) => {
+			const { event } = payload;
+			switch (event) {
+				case 'signIn':
+					this._storage.setItem('amplify-signin-with-hostedUI', 'false');
+					break;
+				case 'signOut':
+					this._storage.removeItem('amplify-signin-with-hostedUI');
+					break;
+				case 'cognitoHostedUI':
+					this._storage.setItem('amplify-signin-with-hostedUI', 'true');
+					break;
+			}
+		});
+	}
+
+	configure(config?) {
 		const {
 			userPoolId,
 			userPoolWebClientId,
@@ -51,9 +71,9 @@ export class AWSCognitoProvider implements AuthProvider {
 			identityPoolRegion,
 			clientMetadata,
 			endpoint,
-		} = config || {};
+		} = config;
 
-		if (!config['storage']) {
+		if (!config?.storage) {
 			// backward compatability
 			if (cookieStorage) this._storage = new CookieStorage(cookieStorage);
 			else {

@@ -18,7 +18,7 @@ import {
 	Parser,
 } from '@aws-amplify/core';
 import { CognitoUser } from 'amazon-cognito-identity-js';
-import { AWSCognitoProvider } from './Providers/AWSCognitoProvider';
+import { AWSCognitoProvider } from './Providers';
 import { UsernamePasswordOpts, SignUpParams } from './types';
 import { AuthProvider } from './types/Provider';
 
