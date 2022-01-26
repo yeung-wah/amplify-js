@@ -19,7 +19,7 @@ import {
 } from '@aws-amplify/core';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 import { AWSCognitoProvider } from './Providers/AWSCognitoProvider';
-import { UsernamePasswordOpts } from './types';
+import { UsernamePasswordOpts, SignUpParams } from './types';
 import { AuthProvider } from './types/Provider';
 
 const logger = new Logger('AuthClass');
@@ -96,8 +96,8 @@ export class AuthPlugClass {
 	}
 
 	/**
-	 * Configure Storage
-	 * @param {Object} config - Configuration object for storage
+	 * Configure auth
+	 * @param {Object} config - Configuration object for auth
 	 * @return {Object} - Current configuration
 	 */
 	configure(config?) {

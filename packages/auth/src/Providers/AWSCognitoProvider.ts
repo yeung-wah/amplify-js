@@ -15,13 +15,13 @@ import {
 	ISignUpResult,
 	NodeCallback,
 } from 'amazon-cognito-identity-js';
-import { SignUpParams } from '../../lib-esm';
 import { dispatchAuthEvent } from '../AuthPlug';
 import {
 	AuthErrorTypes,
 	AuthOptions,
 	isUsernamePasswordOpts,
 	SignOutOpts,
+	SignUpParams,
 	UsernamePasswordOpts,
 } from '../types';
 import { AuthProvider } from '../types/Provider';
@@ -32,6 +32,7 @@ export class AWSCognitoProvider implements AuthProvider {
 	static readonly CATEGORY = 'Auth';
 	static readonly PROVIDER_NAME = 'AWSCognito';
 	private _storage;
+	private _storageSync;
 	private pendingSignIn;
 	private userPool: CognitoUserPool = null;
 	Credentials = Credentials;
