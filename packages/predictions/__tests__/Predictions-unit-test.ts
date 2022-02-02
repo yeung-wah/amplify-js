@@ -1,4 +1,8 @@
-import { PredictionsOptions, TranslateTextInput } from '../src/types';
+import {
+	PredictionsOptions,
+	TextToSpeechOutput,
+	TranslateTextInput,
+} from '../src/types';
 import { PredictionsClass } from '../src/Predictions';
 import { default as AWSConvertPredictionsProvider } from '../src/Providers/AmazonAIConvertPredictionsProvider';
 import { default as AWSIdentifyPredictionsProvider } from '../src/Providers/AmazonAIIdentifyPredictionsProvider';
@@ -74,15 +78,15 @@ describe('Predictions test', () => {
 			const convertProvider = new AWSConvertPredictionsProvider();
 			const convertSpy = jest
 				.spyOn(convertProvider, 'configure')
-				.mockImplementation(() => {});
+				.mockImplementation(() => ({}));
 			const identifyProvider = new AWSIdentifyPredictionsProvider();
 			const identifySpy = jest
 				.spyOn(identifyProvider, 'configure')
-				.mockImplementation(() => {});
+				.mockImplementation(() => ({}));
 			const topLevelProvider = new AWSPredictionsProvider();
 			const topLevelSpy = jest
 				.spyOn(topLevelProvider, 'configure')
-				.mockImplementation(() => {});
+				.mockImplementation(() => ({}));
 			const predictions = new PredictionsClass(options);
 			predictions.addPluggable(convertProvider);
 			predictions.addPluggable(identifyProvider);
@@ -143,15 +147,15 @@ describe('Predictions test', () => {
 		const convertProvider = new AWSConvertPredictionsProvider();
 		const convertSpy = jest
 			.spyOn(convertProvider, 'configure')
-			.mockImplementation(() => {});
+			.mockImplementation(() => ({}));
 		const identifyProvider = new AWSIdentifyPredictionsProvider();
 		const identifySpy = jest
 			.spyOn(identifyProvider, 'configure')
-			.mockImplementation(() => {});
+			.mockImplementation(() => ({}));
 		const topLevelProvider = new AWSPredictionsProvider();
 		const topLevelSpy = jest
 			.spyOn(topLevelProvider, 'configure')
-			.mockImplementation(() => {});
+			.mockImplementation(() => ({}));
 		predictions.addPluggable(convertProvider);
 		predictions.addPluggable(identifyProvider);
 		predictions.addPluggable(topLevelProvider);
@@ -288,10 +292,12 @@ describe('Predictions test', () => {
 			const convertSpy = jest
 				.spyOn(provider, 'convert')
 				.mockImplementation(() => {
-					return Promise.resolve('translatedText');
+					return Promise.resolve({
+						text: 'translatedText',
+					} as TextToSpeechOutput);
 				});
 			const data = await predictions.convert(input, options);
-			expect(data).toEqual('translatedText');
+			expect(data.text).toEqual('translatedText');
 			expect(convertSpy).toHaveBeenCalledTimes(1);
 		});
 		test('happy case with one top level pluggable', async () => {
@@ -304,10 +310,12 @@ describe('Predictions test', () => {
 			const convertSpy = jest
 				.spyOn(provider, 'convert')
 				.mockImplementation(() => {
-					return Promise.resolve('translatedText');
+					return Promise.resolve({
+						text: 'translatedText',
+					} as TextToSpeechOutput);
 				});
 			const data = await predictions.convert(input, options);
-			expect(data).toEqual('translatedText');
+			expect(data.text).toEqual('translatedText');
 			expect(convertSpy).toHaveBeenCalledTimes(1);
 		});
 		test('error case with no convert pluggable', () => {
@@ -353,7 +361,7 @@ describe('Predictions test', () => {
 				predictions.convert(input, { providerName: 'WRONG_NAME' });
 			} catch (e) {
 				expect(e.message).toMatch(
-					"Cannot read property 'convert' of undefined"
+					"Cannot read properties of undefined (reading 'convert')"
 				);
 			}
 		});
@@ -367,12 +375,14 @@ describe('Predictions test', () => {
 			const convertSpy = jest
 				.spyOn(provider, 'convert')
 				.mockImplementation(() => {
-					return Promise.resolve('translatedText');
+					return Promise.resolve({
+						text: 'translatedText',
+					} as TextToSpeechOutput);
 				});
 			const data = await predictions.convert(input, {
 				providerName: 'AmazonAIConvertPredictionsProvider',
 			});
-			expect(data).toEqual('translatedText');
+			expect(data.text).toEqual('translatedText');
 			expect(convertSpy).toHaveBeenCalledTimes(1);
 		});
 		test('happy case with one convert and one top level pluggable and pluggable name provided', async () => {
@@ -387,12 +397,14 @@ describe('Predictions test', () => {
 			const convertSpy = jest
 				.spyOn(convertProvider, 'convert')
 				.mockImplementation(() => {
-					return Promise.resolve('translatedText');
+					return Promise.resolve({
+						text: 'translatedText',
+					} as TextToSpeechOutput);
 				});
 			const data = await predictions.convert(input, {
 				providerName: 'AmazonAIConvertPredictionsProvider',
 			});
-			expect(data).toEqual('translatedText');
+			expect(data.text).toEqual('translatedText');
 			expect(convertSpy).toHaveBeenCalledTimes(1);
 		});
 	});

@@ -27,15 +27,7 @@ const TO_DO_SCRIPT = `${MULTILINE_FLAG} 'tell application "Terminal" to do scrip
 const IN_FRONT_WINDOW = `in front window'${WHITE_SPACE}`;
 
 // List of packages to exclude that do not have build:watch script
-const EXCLUDED_PACKAGES = [
-	'aws-amplify-vue',
-	'@aws-amplify/ui',
-	'@aws-amplify/ui-vue',
-	'@aws-amplify/ui-angular',
-	'@aws-amplify/ui-components',
-	'@aws-amplify/ui-storybook',
-	'aws-amplify-angular',
-];
+const EXCLUDED_PACKAGES = ['@aws-amplify/ui'];
 
 // List of CJS identified packages
 const CJS_PACKAGES_PRESET = [

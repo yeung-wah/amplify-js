@@ -1141,7 +1141,7 @@ export class AuthClass {
 	 * Delete the current authenticated user
 	 * @return {Promise}
 	 **/
-	//TODO: Check return type void
+	// TODO: Check return type void
 	public async deleteUser(): Promise<string | void> {
 		try {
 			await this._storageSync;
@@ -1315,7 +1315,7 @@ export class AuthClass {
 
 								Hub.remove('auth', hostedUISignCallback);
 
-								res();
+								res(null);
 							}, OAUTH_FLOW_MS_TIMEOUT);
 
 							Hub.listen('auth', hostedUISignCallback);
@@ -1332,7 +1332,7 @@ export class AuthClass {
 
 									Hub.remove('auth', hostedUISignCallback);
 
-									res();
+									res(null);
 								}
 							}
 						});
@@ -1708,7 +1708,7 @@ export class AuthClass {
 								if (isSignedInHostedUI) {
 									this.oAuthSignOutRedirect(res, rej);
 								} else {
-									return res();
+									return res(null);
 								}
 							},
 							onFailure: err => {
@@ -1725,7 +1725,7 @@ export class AuthClass {
 					if (isSignedInHostedUI) {
 						this.oAuthSignOutRedirect(res, rej);
 					} else {
-						return res();
+						return res(null);
 					}
 				});
 			}
@@ -1733,7 +1733,7 @@ export class AuthClass {
 	}
 
 	private oAuthSignOutRedirect(
-		resolve: () => void,
+		resolve: (value?: any) => void,
 		reject: (reason?: any) => void
 	) {
 		const { isBrowser } = JS.browserOrNode();
@@ -1848,7 +1848,7 @@ export class AuthClass {
 			user.forgotPassword(
 				{
 					onSuccess: () => {
-						resolve();
+						resolve(null);
 						return;
 					},
 					onFailure: err => {
@@ -2299,16 +2299,16 @@ export class AuthClass {
 		return AuthErrorTypes.NoConfig;
 	}
 
-	private rejectAuthError(type: AuthErrorTypes): Promise<never> {
+	private rejectAuthError(type: AuthErrorTypes): Promise<any> {
 		return Promise.reject(new AuthError(type));
 	}
 
-	private rejectNoUserPool(): Promise<never> {
+	private rejectNoUserPool(): Promise<any> {
 		const type = this.noUserPoolErrorHandler(this._config);
 		return Promise.reject(new NoUserPoolError(type));
 	}
 
-	public async rememberDevice(): Promise<string | AuthError> {
+	public async rememberDevice(): Promise<string | void> {
 		let currUser;
 
 		try {

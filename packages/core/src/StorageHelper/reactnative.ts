@@ -83,7 +83,7 @@ class MemoryStorage {
 							const memoryKey = key.replace(MEMORY_KEY_PREFIX, '');
 							dataMemory[memoryKey] = value;
 						});
-						res();
+						res(null);
 					});
 				});
 			});

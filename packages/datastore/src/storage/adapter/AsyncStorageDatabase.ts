@@ -138,7 +138,7 @@ class AsyncStorageDatabase {
 
 		await new Promise((resolve, reject) => {
 			if (keysToDelete.size === 0) {
-				resolve();
+				resolve(null);
 				return;
 			}
 
@@ -152,14 +152,14 @@ class AsyncStorageDatabase {
 				if (errors && errors.length > 0) {
 					reject(errors);
 				} else {
-					resolve();
+					resolve(null);
 				}
 			});
 		});
 
 		await new Promise((resolve, reject) => {
 			if (keysToSave.size === 0) {
-				resolve();
+				resolve(null);
 				return;
 			}
 
@@ -181,7 +181,7 @@ class AsyncStorageDatabase {
 				if (errors && errors.length > 0) {
 					reject(errors);
 				} else {
-					resolve();
+					resolve(null);
 				}
 			});
 		});

@@ -211,7 +211,7 @@ export class SyncEngine {
 										const ctlSubsSubscription = ctlSubsObservable.subscribe({
 											next: msg => {
 												if (msg === CONTROL_MSG.CONNECTED) {
-													resolve();
+													resolve(null);
 												}
 											},
 											error: err => {
@@ -248,13 +248,13 @@ export class SyncEngine {
 												if (
 													type === ControlMessage.SYNC_ENGINE_SYNC_QUERIES_READY
 												) {
-													resolve();
+													resolve(null);
 												}
 
 												observer.next(message);
 											},
 											complete: () => {
-												resolve();
+												resolve(null);
 											},
 											error: error => {
 												reject(error);
@@ -344,7 +344,7 @@ export class SyncEngine {
 							subscriptions = [];
 						}
 
-						resolve();
+						resolve(null);
 					});
 				});
 
@@ -631,7 +631,7 @@ export class SyncEngine {
 
 										if (paginatingModels.size === 0) {
 											duration = getNow() - start;
-											resolve();
+											resolve(null);
 											observer.next({
 												type: ControlMessage.SYNC_ENGINE_SYNC_QUERIES_READY,
 											});

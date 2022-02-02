@@ -124,10 +124,8 @@ export class GraphQLAPIClass {
 		defaultAuthenticationType?,
 		additionalHeaders: { [key: string]: string } = {}
 	) {
-		const {
-			aws_appsync_authenticationType,
-			aws_appsync_apiKey: apiKey,
-		} = this._options;
+		const { aws_appsync_authenticationType, aws_appsync_apiKey: apiKey } =
+			this._options;
 		const authenticationType =
 			defaultAuthenticationType || aws_appsync_authenticationType || 'AWS_IAM';
 		let headers = {};
@@ -205,9 +203,8 @@ export class GraphQLAPIClass {
 	 */
 	getGraphqlOperationType(operation) {
 		const doc = parse(operation);
-		const definitions = doc.definitions as ReadonlyArray<
-			OperationDefinitionNode
-		>;
+		const definitions =
+			doc.definitions as ReadonlyArray<OperationDefinitionNode>;
 		const [{ operation: operationType }] = definitions;
 
 		return operationType;
@@ -232,9 +229,8 @@ export class GraphQLAPIClass {
 		const [operationDef = {}] = query.definitions.filter(
 			def => def.kind === 'OperationDefinition'
 		);
-		const {
-			operation: operationType,
-		} = operationDef as OperationDefinitionNode;
+		const { operation: operationType } =
+			operationDef as OperationDefinitionNode;
 
 		const headers = additionalHeaders || {};
 
@@ -261,8 +257,6 @@ export class GraphQLAPIClass {
 			case 'subscription':
 				return this._graphqlSubscribe({ query, variables, authMode }, headers);
 		}
-
-		throw new Error(`invalid operation type: ${operationType}`);
 	}
 
 	private async _graphql(

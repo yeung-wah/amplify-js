@@ -19,16 +19,16 @@ const logger = new Logger('CognitoCredentials');
 const waitForInit = new Promise((res, rej) => {
 	if (!browserOrNode().isBrowser) {
 		logger.debug('not in the browser, directly resolved');
-		return res();
+		return res(null);
 	}
 	const ga =
 		window['gapi'] && window['gapi'].auth2 ? window['gapi'].auth2 : null;
 	if (ga) {
 		logger.debug('google api already loaded');
-		return res();
+		return res(null);
 	} else {
 		setTimeout(() => {
-			return res();
+			return res(null);
 		}, 2000);
 	}
 });

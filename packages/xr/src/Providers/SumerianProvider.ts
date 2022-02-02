@@ -48,7 +48,7 @@ export class SumerianProvider extends AbstractXRProvider {
 			scriptElement.src = url;
 
 			scriptElement.addEventListener('load', event => {
-				resolve();
+				resolve(null);
 			});
 
 			scriptElement.addEventListener('error', event => {

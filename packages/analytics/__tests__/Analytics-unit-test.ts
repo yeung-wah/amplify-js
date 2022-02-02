@@ -44,7 +44,7 @@ describe('Analytics test', () => {
 			const spyon = jest
 				.spyOn(ClientDevice, 'clientInfo')
 				.mockImplementationOnce(() => {
-					return 'clientInfo';
+					return {};
 				});
 			const spyon2 = jest
 				.spyOn(Parser, 'parseMobilehubConfig')
@@ -60,7 +60,7 @@ describe('Analytics test', () => {
 			const spyon3 = jest
 				.spyOn(AWSAnalyticsProvider.prototype, 'configure')
 				.mockImplementationOnce(() => {
-					return;
+					return {};
 				});
 
 			expect(analytics.configure({ attr: 'attr' })).toEqual({

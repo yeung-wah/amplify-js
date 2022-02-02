@@ -27,7 +27,7 @@ import {
 	DeleteObjectCommandInput,
 	CopyObjectCommandInput,
 	CopyObjectCommand,
-	PutObjectCommandInput,
+	PutObjectRequest,
 	GetObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import { formatUrl } from '@aws-sdk/util-format-url';
@@ -85,7 +85,7 @@ interface AddTaskInput {
 	emitter: events.EventEmitter;
 	key: string;
 	s3Client: S3Client;
-	params?: PutObjectCommandInput;
+	params?: PutObjectRequest;
 }
 
 /**
@@ -495,7 +495,7 @@ export class AWSS3Provider implements StorageProvider {
 	 */
 	public put<T extends S3ProviderPutConfig>(
 		key: string,
-		object: PutObjectCommandInput['Body'],
+		body: Blob,
 		config?: T
 	): S3ProviderPutOutput<T> {
 		const opt = Object.assign({}, this._config, config);
@@ -519,10 +519,10 @@ export class AWSS3Provider implements StorageProvider {
 		} = opt;
 		const type = contentType ? contentType : 'binary/octet-stream';
 
-		const params: PutObjectCommandInput = {
+		const params: PutObjectRequest = {
 			Bucket: bucket,
 			Key: key,
-			Body: object,
+			Body: body,
 			ContentType: type,
 		};
 		if (cacheControl) {
@@ -578,7 +578,7 @@ export class AWSS3Provider implements StorageProvider {
 				bucket,
 				key,
 				s3Client,
-				file: object as Blob,
+				file: body,
 				emitter,
 				accessLevel: level,
 				params,
