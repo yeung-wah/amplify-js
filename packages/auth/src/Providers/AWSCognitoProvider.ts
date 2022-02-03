@@ -59,6 +59,8 @@ export class AWSCognitoProvider implements AuthProvider {
 	}
 
 	configure(config?) {
+		const conf = config || {};
+		this._config = Object.assign({}, this._config, conf);
 		const {
 			userPoolId,
 			userPoolWebClientId,

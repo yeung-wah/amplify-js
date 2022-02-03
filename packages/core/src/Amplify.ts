@@ -13,6 +13,7 @@ export class AmplifyClass {
 	// for backward compatibility to avoid breaking change
 	// if someone is using like Amplify.Auth
 	Auth = null;
+	AuthPlug = null;
 	Analytics = null;
 	API = null;
 	Credentials = null;

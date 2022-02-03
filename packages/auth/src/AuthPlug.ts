@@ -100,7 +100,7 @@ export class AuthPlugClass {
 	 * @param {Object} config - Configuration object for auth
 	 * @return {Object} - Current configuration
 	 */
-	configure(config?) {
+	public configure(config?) {
 		logger.debug('configuring Auth', config);
 		if (!config) return this._config;
 
@@ -153,5 +153,4 @@ export class AuthPlugClass {
 }
 
 export const AuthPlug = new AuthPlugClass();
-
 Amplify.register(AuthPlug);
