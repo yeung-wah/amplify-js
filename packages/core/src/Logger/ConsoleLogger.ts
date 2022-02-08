@@ -194,7 +194,7 @@ export class ConsoleLogger implements Logger {
 		this._log(LOG_TYPE.VERBOSE, ...msg);
 	}
 
-	addPluggable(pluggable: LoggingProvider) {
+	addPluggable(pluggable?: LoggingProvider) {
 		if (pluggable && pluggable.getCategoryName() === AWS_CLOUDWATCH_CATEGORY) {
 			this._pluggables.push(pluggable);
 			pluggable.configure(this._config);
