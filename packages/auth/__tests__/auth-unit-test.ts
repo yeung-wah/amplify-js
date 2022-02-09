@@ -12,11 +12,7 @@ import {
 
 const MAX_DEVICES: number = 60;
 
-jest.mock('crypto-js/sha256', () => {
-	return {
-		default: jest.fn(() => ''),
-	};
-});
+jest.mock('crypto-js/sha256', () => jest.fn(() => ''));
 
 jest.mock('../src/OAuth/oauthStorage', () => {
 	return {

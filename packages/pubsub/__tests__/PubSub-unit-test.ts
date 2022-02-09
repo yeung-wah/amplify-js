@@ -18,12 +18,12 @@ const mockConnect = jest.fn(options => {
 	options.onSuccess();
 });
 
-const pahoClientMock = jest.fn().mockImplementation((host, clientId) => {
+const pahoClientMock = jest.fn().mockImplementation((_host, clientId) => {
 	if (pahoClientMockCache[clientId]) {
 		return pahoClientMockCache[clientId];
 	}
 
-	var client = {} as any;
+	const client = {} as any;
 
 	client.connect = mockConnect;
 	client.send = jest.fn((topic, message) => {
@@ -41,7 +41,7 @@ const pahoClientMock = jest.fn().mockImplementation((host, clientId) => {
 	return client;
 });
 
-Paho.Client = pahoClientMock;
+jest.spyOn(Paho as any, 'Client').mockImplementation(pahoClientMock);
 
 const credentials = {
 	accessKeyId: 'accessKeyId',
