@@ -32,18 +32,18 @@ export interface AuthProvider {
 	getProviderName(): string;
 
 	// signup
-	signUp(
+	signUp?(
 		params: string | SignUpParams,
 		...restOfAttrs: string[]
 	): Promise<ISignUpResult>;
 
 	// signIn
-	signIn(
+	signIn?(
 		usernameOrSignInOpts: string | SignInOpts,
 		pw?: string,
 		clientMetadata?: ClientMetaData
 	): Promise<CognitoUser | any>;
 
 	// signOut
-	signOut(opts?: SignOutOpts): Promise<any>;
+	signOut?(opts?: SignOutOpts): Promise<any>;
 }
