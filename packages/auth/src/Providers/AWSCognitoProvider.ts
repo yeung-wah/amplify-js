@@ -58,9 +58,8 @@ export class AWSCognitoProvider implements AuthProvider {
 		});
 	}
 
-	configure(config?) {
-		const conf = config || {};
-		this._config = Object.assign({}, this._config, conf);
+	configure(config?: AuthOptions) {
+		this._config = Object.assign({}, this._config, config);
 		const {
 			userPoolId,
 			userPoolWebClientId,
@@ -73,22 +72,22 @@ export class AWSCognitoProvider implements AuthProvider {
 			identityPoolRegion,
 			clientMetadata,
 			endpoint,
-		} = config;
+		} = this._config;
 
-		if (!config?.storage) {
+		if (!this._config?.storage) {
 			// backward compatability
 			if (cookieStorage) this._storage = new CookieStorage(cookieStorage);
 			else {
-				this._storage = config['ssr']
+				this._storage = this._config['ssr']
 					? new UniversalStorage()
 					: new StorageHelper().getStorage();
 			}
 		} else {
-			if (!this._isValidAuthStorage(config['storage'])) {
+			if (!this._isValidAuthStorage(this._config['storage'])) {
 				logger.error('The storage in the Auth config is not valid!');
 				throw new Error('Empty storage object');
 			}
-			this._storage = config['storage'];
+			this._storage = this._config['storage'];
 		}
 
 		this._storageSync = Promise.resolve();
@@ -125,8 +124,7 @@ export class AWSCognitoProvider implements AuthProvider {
 		// 	null,
 		// 	`The Auth category has been configured successfully`
 		// );
-		this._config = config;
-		return config;
+		return this._config;
 	}
 
 	getCategory(): string {

@@ -1,6 +1,7 @@
 export interface AmplifyConfig {
 	Analytics?: object;
 	Auth?: object;
+	AuthPlug?: object;
 	API?: object;
 	Storage?: object;
 	Cache?: object;

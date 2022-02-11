@@ -102,7 +102,7 @@ export class AuthPlugClass {
 	 */
 	public configure(config?) {
 		logger.debug('configuring Auth', config);
-		if (!config) return this._config;
+		if (!config || !Object.keys(config).length) return this._config;
 
 		this._config = Object.assign(
 			{},
@@ -116,7 +116,7 @@ export class AuthPlugClass {
 		});
 
 		if (this._pluggables.length === 0) {
-			this.addPluggable(new AWSCognitoProvider());
+			this.addPluggable(new AWSCognitoProvider(this._config));
 		}
 
 		dispatchAuthEvent(
