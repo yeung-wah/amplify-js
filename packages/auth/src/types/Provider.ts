@@ -1,4 +1,9 @@
-import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
+import {
+	CognitoUser,
+	CognitoUserSession,
+	ISignUpResult,
+} from 'amazon-cognito-identity-js';
+import { CurrentUserOpts } from '.';
 import {
 	ClientMetaData,
 	SignInOpts,
@@ -46,4 +51,7 @@ export interface AuthProvider {
 
 	// signOut
 	signOut?(opts?: SignOutOpts): Promise<any>;
+
+	currentUserPoolUser?(params?: CurrentUserOpts): Promise<CognitoUser | any>;
+	currentSession?(): Promise<CognitoUserSession>;
 }

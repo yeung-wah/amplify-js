@@ -8,7 +8,9 @@ import {
 import {
 	AuthenticationDetails,
 	CognitoUser,
+	CognitoUserAttribute,
 	CognitoUserPool,
+	CognitoUserSession,
 	CookieStorage,
 	IAuthenticationCallback,
 	ICognitoUserData,
@@ -20,6 +22,7 @@ import { dispatchAuthEvent } from '../AuthPlug';
 import {
 	AuthErrorTypes,
 	AuthOptions,
+	CurrentUserOpts,
 	isUsernamePasswordOpts,
 	SignOutOpts,
 	SignUpParams,
@@ -28,6 +31,8 @@ import {
 import { AuthProvider } from '../types/Provider';
 
 const logger = new Logger('AuthClass');
+const OAUTH_FLOW_MS_TIMEOUT = 10 * 1000;
+const USER_ADMIN_SCOPE = 'aws.cognito.signin.user.admin';
 
 export class AWSCognitoProvider implements AuthProvider {
 	static readonly CATEGORY = 'Auth';
@@ -38,6 +43,7 @@ export class AWSCognitoProvider implements AuthProvider {
 	private userPool: CognitoUserPool = null;
 	Credentials = Credentials;
 	private _config;
+	private oAuthFlowInProgress: boolean = false;
 
 	constructor(config?: AuthOptions) {
 		this._config = config ? config : {};
@@ -376,5 +382,222 @@ export class AWSCognitoProvider implements AuthProvider {
 				resolve(user);
 			},
 		};
+	}
+
+	/**
+	 * Get current authenticated user
+	 * @return - A promise resolves to current authenticated CognitoUser if success
+	 */
+	public currentUserPoolUser(
+		params?: CurrentUserOpts
+	): Promise<CognitoUser | any> {
+		if (!this.userPool) {
+			return Promise.reject('No userpool present');
+		}
+
+		return new Promise((res, rej) => {
+			this._storageSync
+				.then(async () => {
+					if (this.isOAuthInProgress()) {
+						logger.debug('OAuth signIn in progress, waiting for resolution...');
+
+						await new Promise(res => {
+							const timeoutId = setTimeout(() => {
+								logger.debug('OAuth signIn in progress timeout');
+
+								Hub.remove('auth', hostedUISignCallback);
+
+								res();
+							}, OAUTH_FLOW_MS_TIMEOUT);
+
+							Hub.listen('auth', hostedUISignCallback);
+
+							function hostedUISignCallback({ payload }) {
+								const { event } = payload;
+
+								if (
+									event === 'cognitoHostedUI' ||
+									event === 'cognitoHostedUI_failure'
+								) {
+									logger.debug(`OAuth signIn resolved: ${event}`);
+									clearTimeout(timeoutId);
+
+									Hub.remove('auth', hostedUISignCallback);
+
+									res();
+								}
+							}
+						});
+					}
+
+					const user = this.userPool.getCurrentUser();
+
+					if (!user) {
+						logger.debug('Failed to get user from user pool');
+						rej('No current user');
+						return;
+					}
+
+					const clientMetadata = this._config.clientMetadata; // TODO: verify behavior if this is override during signIn
+
+					// refresh the session if the session expired.
+					user.getSession(
+						async (err, session) => {
+							if (err) {
+								logger.debug('Failed to get the user session', err);
+								rej(err);
+								return;
+							}
+
+							// get user data from Cognito
+							const bypassCache = params ? params.bypassCache : false;
+
+							if (bypassCache) {
+								await this.Credentials.clear();
+							}
+
+							const clientMetadata = this._config.clientMetadata; // TODO: verify behavior if this is override during signIn
+
+							// validate the token's scope first before calling this function
+							const { scope = '' } = session.getAccessToken().decodePayload();
+							if (scope.split(' ').includes(USER_ADMIN_SCOPE)) {
+								user.getUserData(
+									(err, data) => {
+										if (err) {
+											logger.debug('getting user data failed', err);
+											// Make sure the user is still valid
+											if (
+												err.message === 'User is disabled.' ||
+												err.message === 'User does not exist.' ||
+												err.message === 'Access Token has been revoked' // Session revoked by another app
+											) {
+												rej(err);
+											} else {
+												// the error may also be thrown when lack of permissions to get user info etc
+												// in that case we just bypass the error
+												res(user);
+											}
+											return;
+										}
+										const preferredMFA = data.PreferredMfaSetting || 'NOMFA';
+										const attributeList = [];
+
+										for (let i = 0; i < data.UserAttributes.length; i++) {
+											const attribute = {
+												Name: data.UserAttributes[i].Name,
+												Value: data.UserAttributes[i].Value,
+											};
+											const userAttribute = new CognitoUserAttribute(attribute);
+											attributeList.push(userAttribute);
+										}
+
+										const attributes = this.attributesToObject(attributeList);
+										Object.assign(user, { attributes, preferredMFA });
+										return res(user);
+									},
+									{ bypassCache, clientMetadata }
+								);
+							} else {
+								logger.debug(
+									`Unable to get the user data because the ${USER_ADMIN_SCOPE} ` +
+										`is not in the scopes of the access token`
+								);
+								return res(user);
+							}
+						},
+						{ clientMetadata }
+					);
+				})
+				.catch(e => {
+					logger.debug('Failed to sync cache info into memory', e);
+					return rej(e);
+				});
+		});
+	}
+
+	public currentSession(): Promise<CognitoUserSession> {
+		const that = this;
+		logger.debug('Getting current session');
+		// Purposely not calling the reject method here because we don't need a console error
+		if (!this.userPool) {
+			return Promise.reject();
+		}
+
+		return new Promise((res, rej) => {
+			that
+				.currentUserPoolUser()
+				.then(user => {
+					that
+						.userSession(user)
+						.then(session => {
+							res(session as CognitoUserSession);
+							return;
+						})
+						.catch(e => {
+							logger.debug('Failed to get the current session', e);
+							rej(e);
+							return;
+						});
+				})
+				.catch(e => {
+					logger.debug('Failed to get the current user', e);
+					rej(e);
+					return;
+				});
+		});
+	}
+	/**
+	 * Get the corresponding user session
+	 * @param {Object} user - The CognitoUser object
+	 * @return - A promise resolves to the session
+	 */
+	public userSession(user): Promise<CognitoUserSession> {
+		if (!user) {
+			logger.debug('the user is null');
+			//@ts-ignore
+			return Promise.reject(AuthErrorTypes.NoUserSession);
+		}
+		const clientMetadata = this._config.clientMetadata; // TODO: verify behavior if this is override during signIn
+
+		return new Promise((resolve, reject) => {
+			logger.debug('Getting the session from this user:', user);
+			user.getSession(
+				(err, session) => {
+					if (err) {
+						logger.debug('Failed to get the session from user', user);
+						reject(err);
+						return;
+					} else {
+						logger.debug('Succeed to get the user session', session);
+						resolve(session);
+						return;
+					}
+				},
+				{ clientMetadata }
+			);
+		});
+	}
+
+	private isOAuthInProgress(): boolean {
+		return this.oAuthFlowInProgress;
+	}
+
+	private attributesToObject(attributes) {
+		const obj = {};
+		if (attributes) {
+			attributes.map(attribute => {
+				if (
+					attribute.Name === 'email_verified' ||
+					attribute.Name === 'phone_number_verified'
+				) {
+					obj[attribute.Name] =
+						attribute.Value.toLowerCase() === 'true' ||
+						attribute.Value === true;
+				} else {
+					obj[attribute.Name] = attribute.Value;
+				}
+			});
+		}
+		return obj;
 	}
 }

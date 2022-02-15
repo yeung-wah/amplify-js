@@ -17,9 +17,9 @@ import {
 	Hub,
 	Parser,
 } from '@aws-amplify/core';
-import { CognitoUser } from 'amazon-cognito-identity-js';
+import { CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AWSCognitoProvider } from './Providers';
-import { UsernamePasswordOpts, SignUpParams } from './types';
+import { UsernamePasswordOpts, SignUpParams, CurrentUserOpts } from './types';
 import { AuthProvider } from './types/Provider';
 
 const logger = new Logger('AuthClass');
@@ -48,6 +48,15 @@ export class AuthPlugClass {
 	constructor() {
 		this._config = {};
 		this._pluggables = [];
+	}
+
+	private findProvider(config?) {
+		const provider = config?.provider || DEFAULT_PROVIDER;
+		const prov = this._pluggables.find(
+			pluggable => pluggable.getProviderName() === provider
+		);
+
+		return prov;
 	}
 
 	public getModuleName() {
@@ -134,14 +143,13 @@ export class AuthPlugClass {
 		clientMetadata?: { [key: string]: string },
 		config?: any
 	): Promise<CognitoUser | any> {
-		const provider = config?.provider || DEFAULT_PROVIDER;
-		const prov = this._pluggables.find(
-			pluggable => pluggable.getProviderName() === provider
-		);
+		const prov = this.findProvider(config);
+
 		if (prov === undefined) {
-			logger.debug('No plugin found with providerName', provider);
+			logger.debug('No plugin found with providerName', config?.provider);
 			return Promise.reject('No plugin found ');
 		}
+
 		const signInResponse = prov.signIn(
 			usernameOrSignInOpts,
 			pw,
@@ -149,6 +157,32 @@ export class AuthPlugClass {
 		);
 
 		return signInResponse;
+	}
+
+	public async currentUserPoolUser(
+		params?: CurrentUserOpts,
+		config?: any
+	): Promise<CognitoUserSession> {
+		const prov = this.findProvider(config);
+
+		if (prov === undefined) {
+			logger.debug('No plugin found with providerName', config?.provider);
+			//@ts-ignore
+			return Promise.reject('No plugin found');
+		}
+
+		return prov.currentUserPoolUser(params);
+	}
+	public async currentSession(config?): Promise<CognitoUserSession> {
+		const prov = this.findProvider(config);
+
+		if (prov === undefined) {
+			logger.debug('No plugin found with providerName', config?.provider);
+			//@ts-ignore
+			return Promise.reject('No plugin found');
+		}
+
+		return prov.currentSession();
 	}
 }
 
