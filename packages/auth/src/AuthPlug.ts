@@ -15,11 +15,17 @@ import {
 	Amplify,
 	ConsoleLogger as Logger,
 	Hub,
+	ICredentials,
 	Parser,
 } from '@aws-amplify/core';
 import { CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AWSCognitoProvider } from './Providers';
-import { UsernamePasswordOpts, SignUpParams, CurrentUserOpts } from './types';
+import {
+	UsernamePasswordOpts,
+	SignUpParams,
+	CurrentUserOpts,
+	SignOutOpts,
+} from './types';
 import { AuthProvider } from './types/Provider';
 
 const logger = new Logger('AuthClass');
@@ -69,11 +75,10 @@ export class AuthPlugClass {
 	 */
 	public addPluggable(pluggable: AuthProvider) {
 		if (pluggable && pluggable.getCategory() === 'Auth') {
-			// auth will work with only one plugin ATM
 			this._pluggables.push(pluggable);
 			let config = {};
 
-			config = pluggable.configure(this._config[pluggable.getProviderName()]);
+			config = pluggable.configure(this._config);
 
 			return config;
 		}
@@ -183,6 +188,31 @@ export class AuthPlugClass {
 		}
 
 		return prov.currentSession();
+	}
+	public async getCreds(config?): Promise<ICredentials> {
+		const prov = this.findProvider(config);
+
+		if (prov === undefined) {
+			logger.debug('No plugin found with providerName', config?.provider);
+			//@ts-ignore
+			return Promise.reject('No plugin found');
+		}
+
+		// configure find provider
+		logger.debug('getting current credentials');
+		return prov.getCreds();
+	}
+	public async signOut(opts: SignOutOpts, config?: any) {
+		const prov = this.findProvider(config);
+
+		if (prov === undefined) {
+			logger.debug('No plugin found with providerName', config?.provider);
+			return Promise.reject('No plugin found ');
+		}
+
+		const signOutResponse = prov.signOut(opts);
+
+		return signOutResponse;
 	}
 }
 

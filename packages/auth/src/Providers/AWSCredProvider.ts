@@ -74,7 +74,7 @@ export class AWSCredProvider implements AuthProvider {
 		return AWSCredProvider.PROVIDER_NAME;
 	}
 
-	get() {
+	getCreds() {
 		logger.debug('getting credentials');
 		return this._pickupCredentials();
 	}

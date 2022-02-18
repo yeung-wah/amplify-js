@@ -54,4 +54,5 @@ export interface AuthProvider {
 
 	currentUserPoolUser?(params?: CurrentUserOpts): Promise<CognitoUser | any>;
 	currentSession?(): Promise<CognitoUserSession>;
+	getCreds?(): any;
 }

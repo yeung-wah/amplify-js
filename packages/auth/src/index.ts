@@ -35,5 +35,5 @@ export {
 	appendToCognitoUserAgent,
 	AuthErrorStrings,
 };
-// export * from './Providers';
+export * from './Providers';
 // export * from './types/Provider';

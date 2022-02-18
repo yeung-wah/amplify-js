@@ -44,6 +44,7 @@ export class AWSCognitoProvider implements AuthProvider {
 	Credentials = Credentials;
 	private _config;
 	private oAuthFlowInProgress: boolean = false;
+	private user: any = null;
 
 	constructor(config?: AuthOptions) {
 		this._config = config ? config : {};
@@ -192,8 +193,80 @@ export class AWSCognitoProvider implements AuthProvider {
 	): Promise<ISignUpResult> {
 		return Promise.resolve({} as ISignUpResult);
 	}
-	signOut(opts?: SignOutOpts): Promise<any> {
-		return Promise.resolve('signedOut');
+
+	async signOut(opts?: SignOutOpts) {
+		try {
+			await this.Credentials.clear();
+		} catch (e) {
+			logger.debug('failed to clear cached items');
+		}
+
+		if (this.userPool) {
+			const user = this.userPool.getCurrentUser();
+			if (user) {
+				await this.cognitoIdentitySignOut(opts, user);
+			} else {
+				logger.debug('no current Cognito user');
+			}
+		} else {
+			logger.debug('no Congito User pool');
+		}
+
+		/**
+		 * Note for future refactor - no reliable way to get username with
+		 * Cognito User Pools vs Identity when federating with Social Providers
+		 * This is why we need a well structured session object that can be inspected
+		 * and information passed back in the message below for Hub dispatch
+		 */
+		dispatchAuthEvent('signOut', this.user, `A user has been signed out`);
+		this.user = null;
+	}
+
+	private async cognitoIdentitySignOut(
+		opts: SignOutOpts,
+		user: CognitoUser | any
+	) {
+		try {
+			await this._storageSync;
+		} catch (e) {
+			logger.debug('Failed to sync cache info into memory', e);
+			throw e;
+		}
+
+		return new Promise((res, rej) => {
+			if (opts && opts.global) {
+				logger.debug('user global sign out', user);
+				// in order to use global signout
+				// we must validate the user as an authenticated user by using getSession
+				const clientMetadata = this._config.clientMetadata; // TODO: verify behavior if this is override during signIn
+
+				user.getSession(
+					(err, result) => {
+						if (err) {
+							logger.debug('failed to get the user session', err);
+							return rej(err);
+						}
+						user.globalSignOut({
+							onSuccess: data => {
+								logger.debug('global sign out success');
+
+								return res();
+							},
+							onFailure: err => {
+								logger.debug('global sign out failed', err);
+								return rej(err);
+							},
+						});
+					},
+					{ clientMetadata }
+				);
+			} else {
+				logger.debug('user sign out', user);
+				user.signOut(() => {
+					return res();
+				});
+			}
+		});
 	}
 
 	private _isValidAuthStorage(obj) {
@@ -319,14 +392,14 @@ export class AWSCognitoProvider implements AuthProvider {
 					try {
 						// In order to get user attributes and MFA methods
 						// We need to trigger currentUserPoolUser again
-						// const currentUser = await this.currentUserPoolUser();
-						// that.user = currentUser;
-						// dispatchAuthEvent(
-						// 	'signIn',
-						// 	currentUser,
-						// 	`A user ${user.getUsername()} has been signed in`
-						// );
-						resolve('currentUser');
+						const currentUser = await this.currentUserPoolUser();
+						that.user = currentUser;
+						dispatchAuthEvent(
+							'signIn',
+							currentUser,
+							`A user ${user.getUsername()} has been signed in`
+						);
+						resolve(currentUser);
 					} catch (e) {
 						logger.error('Failed to get the signed in user', e);
 						reject(e);
