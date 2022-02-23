@@ -266,7 +266,7 @@ function buildES6(typeScriptCompiler, watchMode) {
 }
 
 function esbuild(dev) {
-	const origin = dev ? localhost : cdn;
+	// const origin = dev ? localhost : cdn;
 	logger.info(`esbuilding: ${packageInfo.name} ${packageInfo.version}`);
 	const packageCategory = packageInfo.name.startsWith('@aws-amplify/') ? packageInfo.name.substring(13) : undefined;
 
@@ -302,7 +302,7 @@ function esbuild(dev) {
 							build.onResolve({
 								filter
 							}, (args) => {
-								return { path: `${origin}packages/${dependency.category}/${dependency.version}/${dependency.category}-esm.js`, external: true }
+								return { path: `../../${dependency.category}/${dependency.version}/${dependency.category}-esm.js`, external: true }
 							})
 						}
 					}
