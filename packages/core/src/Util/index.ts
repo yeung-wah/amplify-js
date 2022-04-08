@@ -4,3 +4,5 @@ export { default as Reachability } from './Reachability';
 export * from './DateUtils';
 export * from './StringUtils';
 export * from './Constants';
+import * as uuid from 'uuid';
+export { uuid };
