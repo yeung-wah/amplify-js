@@ -1169,6 +1169,7 @@ releasable_branches: &releasable_branches
     only:
       - release
       - main
+      - beta
       - ui-components/main
       - 1.0-stable
       - geo/main
