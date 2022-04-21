@@ -42,7 +42,7 @@
     "build:esm": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:esm:watch": "cross-env BABEL_ENV=es babel src --out-dir es --watch",
     "build:umd": "webpack",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:umd",
     "doc": "jsdoc src -d docs",
     "generate-version": "genversion src/Platform/version.ts --es6 --semi",
     "lint": "eslint src",
