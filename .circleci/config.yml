@@ -390,7 +390,7 @@ jobs:
           command: |
             mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             echo $SSH_HOST_PUBLIC_KEY >> ~/.ssh/known_hosts
-            git clone $AMPLIFY_JS_SAMPLES_STAGING_URL
+            git clone -b webpack_5_upgrades $AMPLIFY_JS_SAMPLES_STAGING_URL
             cd amplify-js-samples-staging
             yarn
       - save_cache:
@@ -1136,7 +1136,7 @@ jobs:
             git config --global user.name $GITHUB_USER
             git status
             git --no-pager diff
-            yarn publish:$CIRCLE_BRANCH
+            # yarn publish:$CIRCLE_BRANCH
 
   post_release:
     executor: build-executor
@@ -1167,7 +1167,7 @@ releasable_branches: &releasable_branches
       - ui-components/main
       - 1.0-stable
       - geo/main
-      - feat/webpack-upgrade
+      - integ_test_upgrade
 
 test_browsers: &test_browsers
   browser: [chrome, firefox]
