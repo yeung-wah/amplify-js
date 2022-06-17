@@ -396,7 +396,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						})
 					);
 				}
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
@@ -433,7 +433,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						((DataStore as any).sync as any).getModelSyncedStatus({})
 					).toBe(true);
 
-					await pause(100);
+					await pause(1);
 					const itemToEdit = (
 						await DataStore.query(Post, p => p.title('contains', 'include'))
 					).pop();
@@ -470,7 +470,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 				//   "the post # - include"
 				// to
 				//   "edited post - omit"
-				await pause(100);
+				await pause(1);
 				((DataStore as any).sync as any).getModelSyncedStatus = (model: any) =>
 					true;
 
@@ -484,7 +484,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						draft.title = 'first edited post - omit';
 					})
 				);
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
@@ -566,7 +566,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 				setTimeout(async () => {
 					const itemToDelete = (await DataStore.query(Post)).pop();
 					await DataStore.delete(itemToDelete);
-				}, 100);
+				}, 1);
 			} catch (error) {
 				done(error);
 			}
@@ -605,7 +605,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 				setTimeout(async () => {
 					const itemToDelete = (await DataStore.query(Post)).pop();
 					await DataStore.delete(itemToDelete);
-				}, 100);
+				}, 1);
 			} catch (error) {
 				done(error);
 			}
@@ -659,7 +659,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						})
 					);
 				}
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
@@ -715,7 +715,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						})
 					);
 				}
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
@@ -775,7 +775,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						})
 					);
 				}
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
@@ -849,7 +849,7 @@ describe('DataStore observeQuery, with fake-indexeddb and fake sync', () => {
 						})
 					);
 				}
-			}, 100);
+			}, 1);
 		} catch (error) {
 			done(error);
 		}
