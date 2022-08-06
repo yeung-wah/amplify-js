@@ -1,0 +1,1 @@
+export { CognitoPlugin } from './CognitoPlugin';

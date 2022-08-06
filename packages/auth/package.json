@@ -8,6 +8,9 @@
   "react-native": {
     "./lib/index": "./lib-esm/index.js"
   },
+  "exports": {
+    "./experimental": "./lib-esm/index-experimental.js"
+  },
   "sideEffects": [
     "./src/Auth.ts",
     "./lib/Auth.js",
