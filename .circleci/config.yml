@@ -1137,22 +1137,22 @@ jobs:
 #           spec: next-owner-based-default
 #           browser: << parameters.browser >>
 
-#   deploy:
-#     executor: macos-executor
-#     working_directory: ~/amplify-js
-#     steps:
-#       - attach_workspace:
-#           at: ~/
-#       - run:
-#           name: 'Publish to Amplify Package'
-#           command: |
-#             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-#             npm whoami
-#             git config --global user.email $GITHUB_EMAIL
-#             git config --global user.name $GITHUB_USER
-#             git status
-#             git --no-pager diff
-#             # yarn publish:$CIRCLE_BRANCH
+  deploy:
+    executor: macos-executor
+    working_directory: ~/amplify-js
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: 'Publish to Amplify Package'
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            npm whoami
+            git config --global user.email $GITHUB_EMAIL
+            git config --global user.name $GITHUB_USER
+            git status
+            git --no-pager diff
+            # yarn publish:$CIRCLE_BRANCH
 
   post_release:
     executor: build-executor
