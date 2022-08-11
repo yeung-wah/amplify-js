@@ -1206,55 +1206,55 @@ jobs:
 #       owner-custom-field-default,
 #     ]
 
-# workflows:
-#   build_test_deploy:
-#     # Tells CircleCI to skip this workflow when the pipeline is triggered by the scheduled source,
-#     # i.e. when the canaries workflow executes
-#     # https://circleci.com/docs/2.0/scheduled-pipelines/#workflows-filtering
-#     when:
-#       not:
-#         equal: [scheduled_pipeline, << pipeline.trigger_source >>]
-#     jobs:
-#       - build
-#       - integ_setup:
-#           filters:
-#             <<: *releasable_branches
-#       - unit_test:
-#           requires:
-#             - build
-#       - integ_react_auth:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
-#           matrix:
-#             parameters:
-#               <<: *test_browsers
-#       - integ_auth_test_cypress_no_ui:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
-#       - integ_react_graphql_api:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
-#           matrix:
-#             parameters:
-#               <<: *test_browsers
-#       - integ_angular_auth:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
-#           matrix:
-#             parameters:
-#               <<: *test_browsers
+workflows:
+  build_test_deploy:
+    # Tells CircleCI to skip this workflow when the pipeline is triggered by the scheduled source,
+    # i.e. when the canaries workflow executes
+    # https://circleci.com/docs/2.0/scheduled-pipelines/#workflows-filtering
+    when:
+      not:
+        equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+    jobs:
+      - build
+      - integ_setup:
+          filters:
+            <<: *releasable_branches
+      - unit_test:
+          requires:
+            - build
+      - integ_react_auth:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+          matrix:
+            parameters:
+              <<: *test_browsers
+      - integ_auth_test_cypress_no_ui:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+      - integ_react_graphql_api:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+          matrix:
+            parameters:
+              <<: *test_browsers
+      - integ_angular_auth:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+          matrix:
+            parameters:
+              <<: *test_browsers
 #       - integ_vue_auth:
 #           requires:
 #             - integ_setup
@@ -1510,18 +1510,18 @@ jobs:
 #           matrix:
 #             parameters:
 #               <<: *test_browsers
-#       - integ_rn_ios_storage:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
-#       - integ_rn_ios_storage_multipart_progress:
-#           requires:
-#             - integ_setup
-#             - build
-#           filters:
-#             <<: *releasable_branches
+      - integ_rn_ios_storage:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
+      - integ_rn_ios_storage_multipart_progress:
+          requires:
+            - integ_setup
+            - build
+          filters:
+            <<: *releasable_branches
 #       - integ_rn_ios_push_notifications:
 #           requires:
 #             - integ_setup
