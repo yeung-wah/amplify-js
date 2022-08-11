@@ -1154,57 +1154,57 @@ jobs:
 #             git --no-pager diff
 #             # yarn publish:$CIRCLE_BRANCH
 
-#   post_release:
-#     executor: build-executor
-#     steps:
-#       - attach_workspace:
-#           at: /root
-#       - restore_cache:
-#           keys:
-#             - amplify-ssh-deps-{{ .Branch }}
-#             - amplify-ssh-deps
-#       - run:
-#           name: 'Post-release steps'
-#           command: |
-#             git config --global user.email $GITHUB_EMAIL
-#             git config --global user.name $GITHUB_USER
-#             git pull origin release
-#             yarn workspace @aws-amplify/core build
-#             git add ./packages/core/src/Platform/version.ts
-#             git commit -m "chore(release): update version.ts [ci skip]"
-#             git push origin release
-#             git push origin release:main
+  post_release:
+    executor: build-executor
+    steps:
+      - attach_workspace:
+          at: /root
+      - restore_cache:
+          keys:
+            - amplify-ssh-deps-{{ .Branch }}
+            - amplify-ssh-deps
+      - run:
+          name: 'Post-release steps'
+          command: |
+            git config --global user.email $GITHUB_EMAIL
+            git config --global user.name $GITHUB_USER
+            git pull origin release
+            yarn workspace @aws-amplify/core build
+            git add ./packages/core/src/Platform/version.ts
+            git commit -m "chore(release): update version.ts [ci skip]"
+            git push origin release
+            git push origin release:main
 
-# releasable_branches: &releasable_branches
-#   branches:
-#     only:
-#       - release
-#       - main
-#       - ui-components/main
-#       - 1.0-stable
-#       - geo/main
-#       - storage/react-native-v-upgrade
+releasable_branches: &releasable_branches
+  branches:
+    only:
+      - release
+      - main
+      - ui-components/main
+      - 1.0-stable
+      - geo/main
+      - storage/react-native-v-upgrade
 
-# test_browsers: &test_browsers
-#   browser: [chrome, firefox]
+test_browsers: &test_browsers
+  browser: [chrome, firefox]
 
-# datastore_auth_scenarios: &datastore_auth_scenarios
-#   scenario: [
-#       owner-based-default, # TODO: Add `owner-based-operations` when tests pass
-#       static-user-pool-groups-default,
-#       static-user-pool-groups-operations,
-#       owner-and-group-different-models-default,
-#       owner-and-group-same-model-default,
-#       owner-and-group-same-model-operations,
-#       dynamic-user-pool-groups-default,
-#       dynamic-user-pool-groups-owner-based-default,
-#       private-auth-default,
-#       private-auth-iam,
-#       public-auth-default,
-#       public-auth-iam,
-#       owner-custom-claim-default,
-#       owner-custom-field-default,
-#     ]
+datastore_auth_scenarios: &datastore_auth_scenarios
+  scenario: [
+      owner-based-default, # TODO: Add `owner-based-operations` when tests pass
+      static-user-pool-groups-default,
+      static-user-pool-groups-operations,
+      owner-and-group-different-models-default,
+      owner-and-group-same-model-default,
+      owner-and-group-same-model-operations,
+      dynamic-user-pool-groups-default,
+      dynamic-user-pool-groups-owner-based-default,
+      private-auth-default,
+      private-auth-iam,
+      public-auth-default,
+      public-auth-iam,
+      owner-custom-claim-default,
+      owner-custom-field-default,
+    ]
 
 workflows:
   build_test_deploy:
