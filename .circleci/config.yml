@@ -39,7 +39,7 @@ executors:
 
   android-executor:
     machine:
-      image: android:202102-01
+      image: android:2022.04.1
     resource_class: large
 
 test_env_vars: &test_env_vars
@@ -198,8 +198,8 @@ commands:
     steps:
       - attach_workspace:
           at: ~/
-      # - install_verdaccio
-      # - publish_to_verdaccio
+      - install_verdaccio
+      - publish_to_verdaccio
       - run:
           name: Yarn Install
           command: |
@@ -245,10 +245,10 @@ commands:
     steps:
       - attach_workspace:
           at: ~/
-      - run: |
-          curl -o- -L https://yarnpkg.com/install.sh | bash
-      # - install_verdaccio
-      # - publish_to_verdaccio
+      # - run: |
+      #     curl -o- -L https://yarnpkg.com/install.sh | bash
+      - install_verdaccio
+      - publish_to_verdaccio
       - restore_cache:
           key: |
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
