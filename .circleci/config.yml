@@ -247,8 +247,8 @@ commands:
           at: ~/
       - run: |
           curl -o- -L https://yarnpkg.com/install.sh | bash
-      # - install_verdaccio
-      # - publish_to_verdaccio
+      - install_verdaccio
+      - publish_to_verdaccio
       - restore_cache:
           key: |
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
