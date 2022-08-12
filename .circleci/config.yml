@@ -245,6 +245,9 @@ commands:
     steps:
       - attach_workspace:
           at: ~/
+      - run: |
+          curl -o- -L https://yarnpkg.com/install.sh | bash
+          echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
       - install_verdaccio
       - publish_to_verdaccio
       - restore_cache:
@@ -268,9 +271,10 @@ commands:
             shasum | awk '{print $1}' > /tmp/gradle_cache_seed
       - run:
           name: Yarn Install
-          command: |
-            echo "Current NPM registry: " $(yarn config get registry)
-            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
+          command: yarn install --frozen-lockfile --non-interactive
+          # command: |
+          #   echo "Current NPM registry: " $(yarn config get registry)
+          #   ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
       - run:
           background: true
           command: yarn start
@@ -433,36 +437,36 @@ jobs:
           sample_name: auto-signin-after-signup
           spec: auto-signin-after-signup
           browser: << parameters.browser >>
-  integ_angular_auth:
-    parameters:
-      browser:
-        type: string
-    executor: js-test-executor
-    <<: *test_env_vars
-    working_directory: ~/amplify-js-samples-staging/samples
-    steps:
-      - prepare_test_env
-      - integ_test_js:
-          test_name: 'Angular Authenticator'
-          framework: angular
-          category: auth
-          sample_name: amplify-authenticator-legacy
-          spec: authenticator
-          browser: << parameters.browser >>
-      - integ_test_js:
-          test_name: 'Angular Authenticator'
-          framework: angular
-          category: auth
-          sample_name: amplify-authenticator
-          spec: ui-amplify-authenticator
-          browser: << parameters.browser >>
-      - integ_test_js:
-          test_name: 'Angular Custom Authenticator'
-          framework: angular
-          category: auth
-          sample_name: amplify-authenticator
-          spec: custom-authenticator
-          browser: << parameters.browser >>
+  # integ_angular_auth:
+  #   parameters:
+  #     browser:
+  #       type: string
+  #   executor: js-test-executor
+  #   <<: *test_env_vars
+  #   working_directory: ~/amplify-js-samples-staging/samples
+  #   steps:
+  #     - prepare_test_env
+  #     - integ_test_js:
+  #         test_name: 'Angular Authenticator'
+  #         framework: angular
+  #         category: auth
+  #         sample_name: amplify-authenticator-legacy
+  #         spec: authenticator
+  #         browser: << parameters.browser >>
+  #     - integ_test_js:
+  #         test_name: 'Angular Authenticator'
+  #         framework: angular
+  #         category: auth
+  #         sample_name: amplify-authenticator
+  #         spec: ui-amplify-authenticator
+  #         browser: << parameters.browser >>
+  #     - integ_test_js:
+  #         test_name: 'Angular Custom Authenticator'
+  #         framework: angular
+  #         category: auth
+  #         sample_name: amplify-authenticator
+  #         spec: custom-authenticator
+  #         browser: << parameters.browser >>
 #   integ_vue_auth:
 #     parameters:
 #       browser:
@@ -877,22 +881,22 @@ jobs:
 #           sample_name: multi-part-copy-with-progress
 #           spec: multi-part-copy-with-progress
 #           browser: << parameters.browser >>
-  integ_react_graphql_api:
-    parameters:
-      browser:
-        type: string
-    executor: js-test-executor
-    <<: *test_env_vars
-    working_directory: ~/amplify-js-samples-staging/samples/react/api/graphql
-    steps:
-      - prepare_test_env
-      - integ_test_js:
-          test_name: 'React GraphQL API'
-          framework: react
-          category: api
-          sample_name: graphql
-          spec: graphql
-          browser: << parameters.browser >>
+  # integ_react_graphql_api:
+  #   parameters:
+  #     browser:
+  #       type: string
+  #   executor: js-test-executor
+  #   <<: *test_env_vars
+  #   working_directory: ~/amplify-js-samples-staging/samples/react/api/graphql
+  #   steps:
+  #     - prepare_test_env
+  #     - integ_test_js:
+  #         test_name: 'React GraphQL API'
+  #         framework: react
+  #         category: api
+  #         sample_name: graphql
+  #         spec: graphql
+  #         browser: << parameters.browser >>
 #   integ_react_storage_ui:
 #     executor: js-test-executor
 #     <<: *test_env_vars
@@ -964,22 +968,22 @@ jobs:
 #           spec: device-tracking
 #           browser: << parameters.browser >>
 
-  integ_react_delete_user:
-    parameters:
-      browser:
-        type: string
-    executor: js-test-executor
-    <<: *test_env_vars
-    working_directory: ~/amplify-js-samples-staging/samples/react/auth/delete_user
-    steps:
-      - prepare_test_env
-      - integ_test_js:
-          test_name: 'delete-user'
-          framework: react
-          category: auth
-          sample_name: delete-user
-          spec: delete-user
-          browser: << parameters.browser >>
+  # integ_react_delete_user:
+  #   parameters:
+  #     browser:
+  #       type: string
+  #   executor: js-test-executor
+  #   <<: *test_env_vars
+  #   working_directory: ~/amplify-js-samples-staging/samples/react/auth/delete_user
+  #   steps:
+  #     - prepare_test_env
+  #     - integ_test_js:
+  #         test_name: 'delete-user'
+  #         framework: react
+  #         category: auth
+  #         sample_name: delete-user
+  #         spec: delete-user
+  #         browser: << parameters.browser >>
   integ_rn_ios_storage:
     executor: macos-executor
     <<: *test_env_vars
@@ -1085,15 +1089,15 @@ jobs:
 #       #         sample_name: duplicate-packages
 #       #         spec: duplicate-packages
 #       #         browser: << parameters.browser >>
-  integ_auth_test_cypress_no_ui:
-    working_directory: ~/amplify-js-samples-staging/
-    executor: js-test-executor
-    steps:
-      - prepare_no_ui_test_env
-      - integ_test_cypress_no_ui:
-          test_name: 'Token revocation'
-          category: 'auth'
-          spec: 'token-revocation'
+  # integ_auth_test_cypress_no_ui:
+  #   working_directory: ~/amplify-js-samples-staging/
+  #   executor: js-test-executor
+  #   steps:
+  #     - prepare_no_ui_test_env
+  #     - integ_test_cypress_no_ui:
+  #         test_name: 'Token revocation'
+  #         category: 'auth'
+  #         spec: 'token-revocation'
 #   integ_react_geo:
 #     parameters:
 #       browser:
@@ -1215,46 +1219,46 @@ workflows:
       not:
         equal: [scheduled_pipeline, << pipeline.trigger_source >>]
     jobs:
-      - build
+      # - build
       - integ_setup:
           filters:
             <<: *releasable_branches
-      - unit_test:
-          requires:
-            - build
-      - integ_react_auth:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-          matrix:
-            parameters:
-              <<: *test_browsers
-      - integ_auth_test_cypress_no_ui:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-      - integ_react_graphql_api:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-          matrix:
-            parameters:
-              <<: *test_browsers
-      - integ_angular_auth:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-          matrix:
-            parameters:
-              <<: *test_browsers
+      # - unit_test:
+      #     requires:
+      #       - build
+      # - integ_react_auth:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      #     matrix:
+      #       parameters:
+      #         <<: *test_browsers
+      # - integ_auth_test_cypress_no_ui:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      # - integ_react_graphql_api:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      #     matrix:
+      #       parameters:
+      #         <<: *test_browsers
+      # - integ_angular_auth:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      #     matrix:
+      #       parameters:
+      #         <<: *test_browsers
 #       - integ_vue_auth:
 #           requires:
 #             - integ_setup
@@ -1501,25 +1505,25 @@ workflows:
 #           matrix:
 #             parameters:
 #               <<: *test_browsers
-      - integ_react_delete_user:
-          requires:
-            - integ_setup
-            - build
-          filters:
-            <<: *releasable_branches
-          matrix:
-            parameters:
-              <<: *test_browsers
+      # - integ_react_delete_user:
+      #     requires:
+      #       - integ_setup
+      #       - build
+      #     filters:
+      #       <<: *releasable_branches
+      #     matrix:
+      #       parameters:
+      #         <<: *test_browsers
       - integ_rn_ios_storage:
           requires:
             - integ_setup
-            - build
+            # - build
           filters:
             <<: *releasable_branches
       - integ_rn_ios_storage_multipart_progress:
           requires:
             - integ_setup
-            - build
+            # - build
           filters:
             <<: *releasable_branches
 #       - integ_rn_ios_push_notifications:
@@ -1531,13 +1535,13 @@ workflows:
       - integ_rn_android_storage:
           requires:
             - integ_setup
-            - build
+            # - build
           filters:
             <<: *releasable_branches
       - integ_rn_android_storage_multipart_progress:
           requires:
             - integ_setup
-            - build
+            # - build
           filters:
             <<: *releasable_branches
       # # - integ_rn_ios_datastore_sqlite_adapter:
@@ -1595,8 +1599,8 @@ workflows:
           filters:
             <<: *releasable_branches
           requires:
-            - unit_test
-            - integ_react_delete_user
+            # - unit_test
+            # - integ_react_delete_user
             # - integ_react_predictions
             # - integ_react_datastore
             # - integ_react_datastore_v2
@@ -1623,29 +1627,29 @@ workflows:
             # - integ_react_amazon_cognito_identity_js_cookie_storage
             # - integ_react_amazon_cognito_identity_js
             # - integ_node_amazon_cognito_identity_js
-            - integ_react_auth
-            - integ_angular_auth
+            # - integ_react_auth
+            # - integ_angular_auth
             # - integ_vue_auth
-            - integ_rn_ios_storage
-            - integ_rn_ios_storage_multipart_progress
+            # - integ_rn_ios_storage
+            # - integ_rn_ios_storage_multipart_progress
             # - integ_rn_ios_push_notifications
-            - integ_rn_android_storage
-            - integ_rn_android_storage_multipart_progress
+            # - integ_rn_android_storage
+            # - integ_rn_android_storage_multipart_progress
             # # - integ_rn_ios_datastore_sqlite_adapter
             # - integ_datastore_auth
             # - integ_datastore_auth_v2
             #   # - integ_duplicate_packages
-            - integ_auth_test_cypress_no_ui
-            - integ_react_graphql_api
+            # - integ_auth_test_cypress_no_ui
+            # - integ_react_graphql_api
             # - integ_react_geo
             # - integ_next_datastore_owner_auth
-      - post_release:
-          filters:
-            branches:
-              only:
-                - release
-          requires:
-            - deploy
+      # - post_release:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - release
+      #     requires:
+      #       - deploy
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below
   canaries:
