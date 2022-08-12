@@ -245,8 +245,8 @@ commands:
     steps:
       - attach_workspace:
           at: ~/
-      - run: |
-          curl -o- -L https://yarnpkg.com/install.sh | bash
+      # - run: |
+      #     curl -o- -L https://yarnpkg.com/install.sh | bash
       # - install_verdaccio
       # - publish_to_verdaccio
       - restore_cache:
@@ -1218,7 +1218,7 @@ workflows:
       not:
         equal: [scheduled_pipeline, << pipeline.trigger_source >>]
     jobs:
-      # - build
+      - build
       - integ_setup:
           filters:
             <<: *releasable_branches
@@ -1516,13 +1516,13 @@ workflows:
       - integ_rn_ios_storage:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
       - integ_rn_ios_storage_multipart_progress:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
 #       - integ_rn_ios_push_notifications:
@@ -1534,13 +1534,13 @@ workflows:
       - integ_rn_android_storage:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
       - integ_rn_android_storage_multipart_progress:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
       # # - integ_rn_ios_datastore_sqlite_adapter:
