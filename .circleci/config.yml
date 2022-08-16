@@ -247,8 +247,8 @@ commands:
           at: ~/
       # - run: |
       #     curl -o- -L https://yarnpkg.com/install.sh | bash
-      - install_verdaccio
-      - publish_to_verdaccio
+      # - install_verdaccio
+      # - publish_to_verdaccio
       - restore_cache:
           key: |
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
@@ -270,10 +270,10 @@ commands:
             shasum | awk '{print $1}' > /tmp/gradle_cache_seed
       - run:
           name: Yarn Install
-          command: yarn install --frozen-lockfile --non-interactive
-          # command: |
-          #   echo "Current NPM registry: " $(yarn config get registry)
-          #   ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
+          # command: yarn install --frozen-lockfile --non-interactive
+          command: |
+            echo "Current NPM registry: " $(yarn config get registry)
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
       - run:
           background: true
           command: yarn start
@@ -1218,7 +1218,7 @@ workflows:
       not:
         equal: [scheduled_pipeline, << pipeline.trigger_source >>]
     jobs:
-      # - build
+      - build
       - integ_setup:
           filters:
             <<: *releasable_branches
@@ -1516,7 +1516,7 @@ workflows:
       - integ_rn_ios_storage:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
       # - integ_rn_ios_storage_multipart_progress:
@@ -1534,7 +1534,7 @@ workflows:
       - integ_rn_android_storage:
           requires:
             - integ_setup
-            # - build
+            - build
           filters:
             <<: *releasable_branches
       # - integ_rn_android_storage_multipart_progress:
