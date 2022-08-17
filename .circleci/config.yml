@@ -300,7 +300,7 @@ commands:
             JEST_JUNIT_OUTPUT_NAME: 'detox-test-results.xml'
           name: Detox Test
           command: |
-            detox test -c android.emu.debug -u
+            ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c android.emu.debug -u -u' -n 3
       - store_test_results:
           path: reports/junit
       - store_artifacts:
