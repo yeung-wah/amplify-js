@@ -40,7 +40,7 @@ executors:
   android-executor:
     machine:
       image: android:2022.06.2
-    resource_class: xl
+    resource_class: xlarge
 
 test_env_vars: &test_env_vars
   environment:
@@ -250,6 +250,9 @@ commands:
       - restore_cache:
           key: |
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: avd memory
+          emulator -memory 768 -avd test
       - run:
           name: Create avd
           command: |
