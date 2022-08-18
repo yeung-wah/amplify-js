@@ -1777,6 +1777,9 @@ workflows:
 # Start Canary Orb
 orbs:
   getting-started-smoke-test:
+    orbs:
+      aws-cli: circleci/aws-cli@3.1.1
+
     executors:
       web-executor:
         docker:
@@ -1839,7 +1842,7 @@ orbs:
                     exit 1
                   fi
                 }
-                eval << parameters.pre-command >> 
+                eval << parameters.pre-command >>
                 retry "<< parameters.command >>"
               no_output_timeout: << parameters.no_output_timeout >>
 
@@ -1869,7 +1872,17 @@ orbs:
         executor: web-executor
         <<: *common_env_vars
         working_directory: ~/project/amplify-getting-started-<< parameters.framework >>
+        environment:
+          AWS_DEFAULT_REGION: us-east-1
         steps:
+          - aws-cli/setup:
+                role-arn: ${AWS_ROLE_ARN}
+          - run:
+              name: Invoking lambda
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
           - run-with-retry:
               label: Scaffold App
               pre-command: cd ../
