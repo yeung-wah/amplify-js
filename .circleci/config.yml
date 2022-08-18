@@ -1674,7 +1674,7 @@ workflows:
       # React
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: React - latest
           npx-command: create-react-app
           framework: react
@@ -1691,7 +1691,7 @@ workflows:
       # Next
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Next.js - latest
           npx-command: create-next-app
           framework: nextjs
@@ -1701,7 +1701,7 @@ workflows:
           ssr: true
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Next.js - next
           npx-command: create-next-app@canary
           framework: nextjs
@@ -1712,7 +1712,7 @@ workflows:
       # Angular
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Angular - latest
           npx-command: -p @angular/cli ng new --defaults true --force
           framework: angular
@@ -1721,7 +1721,7 @@ workflows:
           build-dir: dist
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Angular - next
           npx-command: -p @angular/cli@next ng new --defaults true --force
           framework: angular
@@ -1731,7 +1731,7 @@ workflows:
       # Vue
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Vue - latest
           npx-command: -p @vue/cli vue create --default --force --registry "https://registry.npmmirror.com" # npmmirror works better with vue create specifically in CCI
           framework: vue
@@ -1741,7 +1741,7 @@ workflows:
           build-dir: dist
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: Vue - next
           npx-command: -p @vue/cli@next vue create --default --force --registry "https://registry.npmmirror.com"
           framework: vue
