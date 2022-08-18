@@ -1673,12 +1673,16 @@ workflows:
       ## Web
       # React
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: React - latest
           npx-command: create-react-app
           framework: react
           main-file-path: src/App.js
           build-dir: build
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: React - next
           npx-command: create-react-app@next
           framework: react
@@ -1686,6 +1690,8 @@ workflows:
           build-dir: build
       # Next
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Next.js - latest
           npx-command: create-next-app
           framework: nextjs
@@ -1694,6 +1700,8 @@ workflows:
           build-dir: build
           ssr: true
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Next.js - next
           npx-command: create-next-app@canary
           framework: nextjs
@@ -1703,6 +1711,8 @@ workflows:
           ssr: true
       # Angular
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Angular - latest
           npx-command: -p @angular/cli ng new --defaults true --force
           framework: angular
@@ -1710,6 +1720,8 @@ workflows:
           dev-port: 4200
           build-dir: dist
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Angular - next
           npx-command: -p @angular/cli@next ng new --defaults true --force
           framework: angular
@@ -1718,6 +1730,8 @@ workflows:
           build-dir: dist
       # Vue
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Vue - latest
           npx-command: -p @vue/cli vue create --default --force --registry "https://registry.npmmirror.com" # npmmirror works better with vue create specifically in CCI
           framework: vue
@@ -1726,6 +1740,8 @@ workflows:
           dev-port: 8080
           build-dir: dist
       - getting-started-smoke-test/web:
+          context:
+            - context
           name: Vue - next
           npx-command: -p @vue/cli@next vue create --default --force --registry "https://registry.npmmirror.com"
           framework: vue
