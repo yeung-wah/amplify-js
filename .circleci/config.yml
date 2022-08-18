@@ -1888,7 +1888,6 @@ orbs:
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
-              aws-region: us-east-1
           - run:
               name: Invoking lambda
               command: |
@@ -1947,7 +1946,6 @@ orbs:
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
-              aws-region: us-east-1
           - run:
               name: Invoking lambda
               command: |
@@ -1993,7 +1991,6 @@ orbs:
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
-              aws-region: us-east-1
           - run:
               name: Invoking lambda
               command: |
@@ -2059,7 +2056,6 @@ orbs:
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
-              aws-region: us-east-1
           - run:
               name: Invoking lambda
               command: |
