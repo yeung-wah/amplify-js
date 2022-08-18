@@ -1682,7 +1682,7 @@ workflows:
           build-dir: build
       - getting-started-smoke-test/web:
           context:
-            - context
+            - cloudwatch-monitoring
           name: React - next
           npx-command: create-react-app@next
           framework: react
@@ -1884,12 +1884,11 @@ orbs:
         executor: web-executor
         <<: *common_env_vars
         working_directory: ~/project/amplify-getting-started-<< parameters.framework >>
-        environment:
-          AWS_DEFAULT_REGION: us-east-1
         steps:
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
+              aws-region: us-east-1
           - run:
               name: Invoking lambda
               command: |
@@ -1926,6 +1925,8 @@ orbs:
                     command: npm run build && (npm start & wait-on http://localhost:3000 -t $MAX_WAIT_ON_TIMEOUT)
 
       rn-ios:
+        orbs:
+          aws-cli: circleci/aws-cli@3.1.1
         parameters:
           framework:
             type: string
@@ -1945,6 +1946,16 @@ orbs:
         resource_class: large
         working_directory: ~/amplify_getting_started_<< parameters.framework >>
         steps:
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              aws-region: us-east-1
+          - run:
+              name: Invoking lambda
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
           - run-with-retry:
               label: Scaffold App
               pre-command: cd ../ && rm -rf amplify_getting_started_<< parameters.framework >>
@@ -1970,6 +1981,8 @@ orbs:
               command: npm run ios
 
       rn-android:
+        orbs:
+          aws-cli: circleci/aws-cli@3.1.1
         parameters:
           framework:
             type: string
@@ -1981,6 +1994,16 @@ orbs:
         executor: android-executor
         working_directory: ~/amplify_getting_started_<< parameters.framework >>
         steps:
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              aws-region: us-east-1
+          - run:
+              name: Invoking lambda
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
           - run:
               name: Create avd
               command: |
@@ -2025,6 +2048,7 @@ orbs:
               command: npm run android
 
       expo:
+
         parameters:
           framework:
             type: string
@@ -2037,6 +2061,16 @@ orbs:
         <<: *common_env_vars
         working_directory: ~/amplify_getting_started_<< parameters.framework >>
         steps:
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              aws-region: us-east-1
+          - run:
+              name: Invoking lambda
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
           - run-with-retry:
               label: Install Expo
               command: npm i -g expo-cli@<< parameters.tag >> wait-on
