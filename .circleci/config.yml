@@ -1888,7 +1888,8 @@ orbs:
           AWS_DEFAULT_REGION: us-east-1
         steps:
           - aws-cli/setup:
-                role-arn: ${AWS_ROLE_ARN}
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
           - run:
               name: Invoking lambda
               command: |
