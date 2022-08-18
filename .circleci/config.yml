@@ -251,14 +251,14 @@ commands:
           key: |
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
       - run:
-          name: avd memory
-          command: emulator -memory 768 -avd test
-      - run:
           name: Create avd
           command: |
             SYSTEM_IMAGES="system-images;android-29;default;x86_64"
             sdkmanager "$SYSTEM_IMAGES"
             echo "no" | avdmanager --verbose create avd -n test -k "$SYSTEM_IMAGES"
+      - run:
+          name: Configure avd memory
+          command: emulator test -memory 768 
       - run:
           name: Launch emulator
           command: |
