@@ -252,7 +252,7 @@ commands:
             brew-cache-{{ arch }}-{{ .Environment.CACHE_VERSION }}
       - run:
           name: avd memory
-          emulator -memory 768 -avd test
+          command: emulator -memory 768 -avd test
       - run:
           name: Create avd
           command: |
