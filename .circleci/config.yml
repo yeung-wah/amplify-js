@@ -1866,7 +1866,7 @@ orbs:
                   n=0
                   until [ $n -ge $MAX_RETRY ]
                   do
-                      bash -c "$@" && exit 0
+                      baasdasdsh -c "$@" && exit 0
                       n=$[$n+1]
                       echo "retry $n of $MAX_RETRY"
                       sleep << parameters.sleep >>
