@@ -1709,8 +1709,7 @@ orbs:
             default: false
         steps:
           - when:
-              condition: 
-                equal: [ true, << parameters.should-run >>]
+              condition: on_fail
               steps: 
                 - aws-cli/setup:
                     role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
