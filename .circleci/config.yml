@@ -1967,6 +1967,7 @@ orbs:
           - run-with-retry:
               label: Start App
               command: yarn web & wait-on http://localhost:19006  -t $MAX_WAIT_ON_TIMEOUT
+          - send-metric-on-fail
         
           
 # End Canary Orb
