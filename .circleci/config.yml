@@ -1718,6 +1718,9 @@ orbs:
       send-metric-on-fail:
         description: Send failure datapoint to cloudwatch
         steps:
+          - run:
+              command: echo HELLO_WORLD
+              when: on_fail
           - aws-cli/setup:
               role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
               role-arn: ${AWS_ROLE_ARN}
