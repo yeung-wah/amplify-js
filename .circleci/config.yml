@@ -1670,129 +1670,12 @@ workflows:
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below
   canaries:
     jobs:
-      ## Web
-      # React
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: React - latest
-          npx-command: create-react-app
-          framework: react
-          main-file-path: src/App.js
-          build-dir: build
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: React - next
-          npx-command: create-react-app@next
-          framework: react
-          main-file-path: src/App.js
-          build-dir: build
-      # Next
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Next.js - latest
-          npx-command: create-next-app
-          framework: nextjs
-          main-file-path: pages/_app.js
-          dev-start: dev
-          build-dir: build
-          ssr: true
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Next.js - next
-          npx-command: create-next-app@canary
-          framework: nextjs
-          main-file-path: pages/_app.js
-          dev-start: dev
-          build-dir: build
-          ssr: true
-      # Angular
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Angular - latest
-          npx-command: -p @angular/cli ng new --defaults true --force
-          framework: angular
-          main-file-path: src/main.ts
-          dev-port: 4200
-          build-dir: dist
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Angular - next
-          npx-command: -p @angular/cli@next ng new --defaults true --force
-          framework: angular
-          main-file-path: src/main.ts
-          dev-port: 4200
-          build-dir: dist
-      # Vue
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Vue - latest
-          npx-command: -p @vue/cli vue create --default --force --registry "https://registry.npmmirror.com"
-          framework: vue
-          main-file-path: src/main.js
-          dev-start: serve
-          dev-port: 8080
-          build-dir: dist
-      - getting-started-smoke-test/web:
-          context:
-            - cloudwatch-monitoring
-          name: Vue - next
-          npx-command: -p @vue/cli@next vue create --default --force --registry "https://registry.npmmirror.com"
-          framework: vue
-          main-file-path: src/main.js
-          dev-start: serve
-          dev-port: 8080
-          build-dir: dist
-      ## Mobile
-      # RN CLI
-      - getting-started-smoke-test/rn-ios:
-          context:
-            - cloudwatch-monitoring
-          name: RN iOS - latest
-          framework: rn_ios
-          main-file-path: ./App.js
-          # TODO: delete next line after https://github.com/react-native-picker/picker/issues/425 is resolved
-          tag: 0.68.2
-      - getting-started-smoke-test/rn-android:
-          context:
-            - cloudwatch-monitoring
-          name: RN Android - latest
-          framework: rn_android
-          main-file-path: ./App.js
-          # TODO: delete next line after https://github.com/react-native-picker/picker/issues/425 is resolved
-          tag: 0.68.2
-
-      # TODO: re-enable the following 2 jobs after https://github.com/react-native-picker/picker/issues/425 is resolved
-      # - getting-started-smoke-test/rn-ios:
-      #     name: RN iOS - next
-      #     framework: rn_ios
-      #     main-file-path: ./App.js
-      #     tag: next
-      # - getting-started-smoke-test/rn-android:
-      #     name: RN Android - next
-      #     framework: rn_android
-      #     main-file-path: ./App.js
-      #     tag: next
-      # Expo
       - getting-started-smoke-test/expo:
           context:
             - cloudwatch-monitoring
           name: Expo - latest
           framework: expo_ios
           main-file-path: ./App.js
-      - getting-started-smoke-test/expo:
-          context:
-            - cloudwatch-monitoring
-          name: Expo - next
-          framework: expo_ios
-          main-file-path: ./App.js
-          tag: next
 
 # Start Canary Orb
 orbs:
@@ -2061,25 +1944,12 @@ orbs:
               role-arn: ${AWS_ROLE_ARN}
               session-duration: '2000'
           - run-with-retry:
-              label: Install Expo
-              command: npm i -g --prefix=$HOME/.local expo-cli@<< parameters.tag >> wait-on
-          - run-with-retry:
-              label: Scaffold App
-              command: cd ../ && rm -rf amplify_getting_started_<< parameters.framework >> && expo-cli init amplify_getting_started_<< parameters.framework >> --yes
-              no_output_timeout: 5m
-          - run-with-retry:
-              label: Install Expo Web Deps
-              command: npx expo install react-native-web@~0.18.7 react-dom@18.0.0 @expo/webpack-config@^0.17.0
-          - run-with-retry:
-              label: Install Amplify dependencies
-              command: yarn add aws-amplify aws-amplify-react-native @react-native-community/netinfo @react-native-async-storage/async-storage @react-native-picker/picker
-          - run-with-retry:
-              label: Call Amplify library in code
-              command: |
-                echo "$IMPORT_STATEMENT" | cat - << parameters.main-file-path >> | tee << parameters.main-file-path >>
-                echo "$LIBRARY_STATEMENT" >> << parameters.main-file-path >>
-          - run-with-retry:
               label: Start App
               command: yarn web & wait-on http://localhost:19006  -t $MAX_WAIT_ON_TIMEOUT
+          - run:
+              name: 'Set env var'
+              command: echo "job_status=\"fail\"" >> $BASH_ENV
+              when: on_fail
           - send-metric-on-fail
+          
 # End Canary Orb
