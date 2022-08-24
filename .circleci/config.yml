@@ -1704,14 +1704,22 @@ orbs:
       send-metric-on-fail:
         description: Send failure datapoint to cloudwatch
         steps:
-          - run:
-              name: Send failure datapoint to cloudwatch
-              command: |
-                echo $job_status
-                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
-                echo $payload
-                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
-              when: on_fail
+          - when:
+              condition: 
+                equal: [ "fail", $job_status ]
+              steps: 
+                - aws-cli/setup:
+                    role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+                    role-arn: ${AWS_ROLE_ARN}
+                    session-duration: '2000'
+                - run:
+                    name: Send failure datapoint to cloudwatch
+                    command: |
+                      echo $job_status
+                      payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                      echo $payload
+                      aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
+    
       run-with-retry:
         description: Run command with retry
         parameters:
@@ -1940,10 +1948,6 @@ orbs:
         <<: *common_env_vars
         working_directory: ~/amplify_getting_started_<< parameters.framework >>
         steps:
-          - aws-cli/setup:
-              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
-              role-arn: ${AWS_ROLE_ARN}
-              session-duration: '2000'
           - run-with-retry:
               label: Start App
               command: yarn web & wait-on http://localhost:19006  -t $MAX_WAIT_ON_TIMEOUT
