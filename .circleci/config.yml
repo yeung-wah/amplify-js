@@ -1718,12 +1718,10 @@ orbs:
       send-metric-on-fail:
         description: Send failure datapoint to cloudwatch
         steps:
-          - run:
-              name: 'Set env var'
-              command: echo "job_status=\"fail\"" >> $BASH_ENV
-              when: always
-          - assume-aws-oidc-role:
-              should-run: true
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              session-duration: '2000'
           - run:
               name: Send failure datapoint to cloudwatch
               command: |
@@ -1962,9 +1960,10 @@ orbs:
         <<: *common_env_vars
         working_directory: ~/amplify_getting_started_<< parameters.framework >>
         steps:
+          - send-metric-on-fail
           - run-with-retry:
               label: Start App
               command: yarn web & wait-on http://localhost:19006  -t $MAX_WAIT_ON_TIMEOUT
-          - send-metric-on-fail
+        
           
 # End Canary Orb
